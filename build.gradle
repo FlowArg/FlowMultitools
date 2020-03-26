@@ -1,0 +1,63 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+
+group 'fr.flowarg'
+version '1.0.0'
+archivesBaseName = 'flowmultitools'
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = 'flowmultitools'
+                name = project.name
+                description = 'FlowMultiTools is a library for my projects'
+                url = 'https://github.com/FlowArg/FlowMultitools'
+
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/FlowArg/FlowMultitools/issues'
+                }
+
+                licenses {
+					license {
+						name = 'LICENSE'
+						url = 'https://github.com/FlowArg/FlowMultitools/blob/master/LICENSE'
+						distribution = 'repo'
+					}
+				}
+            }
+        }
+    }
+    repositories {
+		maven {
+			url "https://flowarg.github.io/maven/"
+		}
+	}
+}
+
+repositories {
+    jcenter()
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:18.0.0'
+    implementation 'org.codehaus.plexus:plexus-archiver:2.2'
+}
