@@ -5,7 +5,7 @@ Add FlowMultitools in your dependencies :
 ```groovy
 repositories {
 	maven {
-		name 'Flow's Maven repository'
+		name "Flow's Maven repository"
 		url = "https://flowarg.github.io/maven/"
 	}
 }
