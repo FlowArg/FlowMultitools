@@ -11,7 +11,7 @@ compileJava {
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    classifier 'sources'
     from sourceSets.main.allSource
 }
 
