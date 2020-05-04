@@ -3,7 +3,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.0.0'
+version '1.0.2'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
@@ -50,14 +50,10 @@ publishing {
 
 repositories {
     jcenter()
-}
-
-repositories {
-    jcenter()
     mavenCentral()
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:18.0.0'
+    implementation 'org.jetbrains:annotations:19.0.0'
     implementation 'org.codehaus.plexus:plexus-archiver:2.2'
 }

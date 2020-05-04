@@ -11,7 +11,7 @@ public final class Logger
 
     public Logger(String prefix, File logFile)
     {
-        this.prefix = prefix;
+        this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
         this.logFile = logFile;
     }
 
@@ -40,11 +40,11 @@ public final class Logger
 
     public void info(String message)
     {
-        message(false, message);
+        this.message(false, message);
     }
     public void err(String message)
     {
-        message(true, message);
+        this.message(true, message);
     }
 
     public void warn(String message)
@@ -81,6 +81,22 @@ public final class Logger
         }
     }
 
+    public void printStackTrace(Throwable throwable)
+    {
+        this.printStackTrace("An error as occurred : ", throwable);
+    }
+
+    public void printStackTrace(String errorName, @NotNull Throwable throwable)
+    {
+        this.err(errorName + throwable.toString());
+        for (StackTraceElement trace : throwable.getStackTrace())
+        {
+            final String toPrint = "\tat " + trace.toString();
+            this.writeToTheLogFile(toPrint);
+            System.err.println(toPrint);
+        }
+    }
+
     public enum EnumLogColor
     {
         RESET("\u001B[0m"),
@@ -104,5 +120,10 @@ public final class Logger
         {
             return color;
         }
+    }
+
+    public File getLogFile()
+    {
+        return this.logFile;
     }
 }
