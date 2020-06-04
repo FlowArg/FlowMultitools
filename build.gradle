@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 group 'fr.flowarg'
 version '1.0.2'
@@ -8,6 +9,7 @@ archivesBaseName = 'flowmultitools'
 
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
 }
 
 task sourcesJar(type: Jar) {
@@ -23,7 +25,7 @@ publishing {
                 version = project.version
                 artifactId = 'flowmultitools'
                 name = project.name
-                description = 'FlowMultiTools is a library for my projects'
+                description = 'FlowMultitools is a library for my projects'
                 url = 'https://github.com/FlowArg/FlowMultitools'
 
                 issueManagement {

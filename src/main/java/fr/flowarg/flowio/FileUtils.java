@@ -33,12 +33,10 @@ public final class FileUtils
     @NotNull
     public static String removeExtension(final String fileName)
     {
-        if (fileName == null) {
-            return "";
-        }
-        if (!getFileExtension(new File(fileName)).isEmpty()) {
+        if (fileName == null)
+            return "";    
+        if (!getFileExtension(new File(fileName)).isEmpty())
             return fileName.substring(0, fileName.lastIndexOf(46));
-        }
         return fileName;
     }
 
@@ -64,15 +62,14 @@ public final class FileUtils
     {
         if (file.exists())
         {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            StringBuilder text = new StringBuilder();
+            final BufferedReader reader = new BufferedReader(new FileReader(file));
+            final StringBuilder text = new StringBuilder();
 
             String line;
 
             while ((line = reader.readLine()) != null)
-            {
                 text.append(line);
-            }
+            
             reader.close();
             return text.toString();
         }
@@ -84,13 +81,14 @@ public final class FileUtils
         if (folder.exists() && folder.isDirectory())
         {
             final ArrayList<File> files = listFilesForFolder(folder);
-            if (files.isEmpty()) {
+            if (files.isEmpty())
+            {
                 folder.delete();
                 return;
             }
-            for (final File f : files) {
+            for (final File f : files)
                 f.delete();
-            }
+            
             folder.delete();
         }
     }
@@ -104,7 +102,8 @@ public final class FileUtils
 
         for (final File f : fs)
         {
-            if (f.isDirectory()) files.addAll(listRecursive(f));
+            if (f.isDirectory())
+            	files.addAll(listRecursive(f));
             files.add(f);
         }
         return files;
@@ -112,8 +111,9 @@ public final class FileUtils
 
     public static void createDirectories(String location, @NotNull String... dirsToCreate) throws IOException
     {
-        for (String s : dirsToCreate) {
-            File f = new File(location, s);
+        for (String s : dirsToCreate)
+        {
+            final File f = new File(location, s);
 
             if (!f.exists()) Files.createDirectory(Paths.get(location + s));
         }
@@ -149,14 +149,14 @@ public final class FileUtils
     {
         try
         {
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            final MessageDigest md = MessageDigest.getInstance("MD5");
             InputStream is = new URL(input).openStream();
 
             try
             {
                 is = new DigestInputStream(is, md);
 
-                byte[] ignoredBuffer = new byte[8 * 1024];
+                final byte[] ignoredBuffer = new byte[8 * 1024];
 
                 while (is.read(ignoredBuffer) > 0) ;
 
@@ -165,16 +165,16 @@ public final class FileUtils
             {
                 is.close();
             }
-            byte[] digest = md.digest();
-            StringBuffer sb = new StringBuffer();
+            final byte[] digest = md.digest();
+            final StringBuffer sb = new StringBuffer();
 
             for (byte b : digest)
-            {
                 sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-            }
+            
             return sb.toString();
 
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             throw new RuntimeException(ex);
         }
@@ -183,85 +183,81 @@ public final class FileUtils
     @NotNull
     public static String getFileChecksum(MessageDigest digest, File file) throws IOException
     {
-        FileInputStream fis = new FileInputStream(file);
+        final FileInputStream fis = new FileInputStream(file);
 
-        byte[] byteArray = new byte[1024];
+        final byte[] byteArray = new byte[1024];
         int bytesCount;
 
         while ((bytesCount = fis.read(byteArray)) != -1)
-        {
             digest.update(byteArray, 0, bytesCount);
-        }
 
         fis.close();
 
-        byte[] bytes = digest.digest();
+        final byte[] bytes = digest.digest();
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (byte aByte : bytes)
-        {
             sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-        }
-
+        
         return sb.toString();
     }
 
     @NotNull
     public static String getMD5ofFile(final File file) throws NoSuchAlgorithmException, IOException
     {
-        MessageDigest md5Digest = MessageDigest.getInstance("MD5");
+        final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
         return getFileChecksum(md5Digest, file);
     }
 
     public static void unzipJar(String destinationDir, String jarPath) throws IOException
     {
-        File file = new File(jarPath);
-        JarFile jar = new JarFile(file);
+        final File file = new File(jarPath);
+        final JarFile jar = new JarFile(file);
 
         for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();)
         {
-            JarEntry entry = enums.nextElement();
+            final JarEntry entry = enums.nextElement();
 
-            String fileName = destinationDir + File.separator + entry.getName();
-            File f = new File(fileName);
+            final String fileName = destinationDir + File.separator + entry.getName();
+            final File f = new File(fileName);
 
             if (fileName.endsWith("/")) f.mkdirs();
         }
 
         for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();)
         {
-            JarEntry entry = enums.nextElement();
+            final JarEntry entry = enums.nextElement();
 
-            String fileName = destinationDir + File.separator + entry.getName();
-            File f = new File(fileName);
+            final String fileName = destinationDir + File.separator + entry.getName();
+            final File f = new File(fileName);
 
             if (!fileName.endsWith("/"))
             {
-                InputStream is = jar.getInputStream(entry);
-                FileOutputStream fos = new FileOutputStream(f);
+                final InputStream is = jar.getInputStream(entry);
+                final FileOutputStream fos = new FileOutputStream(f);
 
                 while (is.available() > 0)
-                {
                     fos.write(is.read());
-                }
-
+                
                 fos.close();
                 is.close();
             }
         }
+        
+        jar.close();
     }
 
     public static void unzipJars(@NotNull JarPath... jars) throws IOException
     {
         for (JarPath jar : jars)
-        {
-            unzipJar(jar.getDestination(), jar.getJarPath());
-        }
+        	unzipJar(jar.getDestination(), jar.getJarPath());    
     }
 
     public static class JarPath implements Serializable
     {
-        private String destination;
+		private static final long serialVersionUID = 1L;
+		
+		private String destination;
         private String jarPath;
 
         public JarPath(String destination, String jarPath)
@@ -284,19 +280,23 @@ public final class FileUtils
     @Nullable
     public static String getSHA1(final File file)
     {
-        try {
-            try (InputStream input = new FileInputStream(file))
+        try
+        {
+            try (final InputStream input = new FileInputStream(file))
             {
                 final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
                 final byte[] buffer = new byte[8192];
                 for (int len = input.read(buffer); len != -1; len = input.read(buffer))
                     sha1.update(buffer, 0, len);
                 return new HexBinaryAdapter().marshal(sha1.digest()).toLowerCase();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
-        }catch(Exception e){
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
         }
         return null;
@@ -309,11 +309,9 @@ public final class FileUtils
         File[] listFiles;
         for (int length = (listFiles = folder.listFiles()).length, i = 0; i < length; ++i)
         {
-            assert listFiles != null;
             final File fileEntry = listFiles[i];
-            if (fileEntry.isDirectory()) {
-                files.addAll(listFilesForFolder(fileEntry));
-            }
+            if (fileEntry.isDirectory())
+                files.addAll(listFilesForFolder(fileEntry));           
             files.add(fileEntry);
         }
         return files;
@@ -322,8 +320,7 @@ public final class FileUtils
     @NotNull
     public static File[] list(@NotNull final File dir)
     {
-        File[] files = dir.listFiles();
-
+        final File[] files = dir.listFiles();
         return files == null ? new File[0] : files;
     }
 
@@ -351,9 +348,7 @@ public final class FileUtils
             int bytesRead;
 
             while ((bytesRead = fileInputStream.read(buffer)) > 0)
-            {
                 gzipOutputStream.write(buffer, 0, bytesRead);
-            }
 
             fileInputStream.close();
             gzipOutputStream.finish();

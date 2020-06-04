@@ -13,6 +13,6 @@ repositories {
 
 ```groovy
 dependencies {
-	compile 'fr.flowarg:flowmultitools:1.0.0'
+	compile 'fr.flowarg:flowmultitools:1.0.2'
 }
 ```

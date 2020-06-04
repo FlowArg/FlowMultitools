@@ -10,8 +10,8 @@ public final class Platform
 
     public static boolean isOnMac()
     {
-        EnumOS os = EnumOS.MAC;
-        AtomicBoolean bool = new AtomicBoolean(false);
+        final EnumOS os = EnumOS.MAC;
+        final AtomicBoolean bool = new AtomicBoolean(false);
         os.getNames().forEach(alias ->
         {
             if (OS.contains(alias)) bool.set(true);
@@ -21,8 +21,8 @@ public final class Platform
 
     public static boolean isOnWindows()
     {
-        EnumOS os = EnumOS.WINDOWS;
-        AtomicBoolean bool = new AtomicBoolean(false);
+    	final EnumOS os = EnumOS.WINDOWS;
+    	final AtomicBoolean bool = new AtomicBoolean(false);
         os.getNames().forEach(alias ->
         {
             if (OS.contains(alias)) bool.set(true);
@@ -32,8 +32,8 @@ public final class Platform
 
     public static boolean isOnLinux()
     {
-        EnumOS os = EnumOS.LINUX;
-        AtomicBoolean bool = new AtomicBoolean(false);
+    	final EnumOS os = EnumOS.LINUX;
+    	final AtomicBoolean bool = new AtomicBoolean(false);
         os.getNames().forEach(alias ->
         {
             if (OS.contains(alias)) bool.set(true);

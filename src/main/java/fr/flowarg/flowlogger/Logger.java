@@ -1,10 +1,17 @@
 package fr.flowarg.flowlogger;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-
-public final class Logger
+public class Logger
 {
     private final String prefix;
     private final File logFile;
@@ -17,18 +24,16 @@ public final class Logger
 
     private void message(boolean err, String toWrite)
     {
-        final String info = prefix + "[INFO] " + toWrite;
-        final String error = prefix + "[ERROR] " + toWrite;
-        if (err)
-        {
-            System.err.println(error);
-            this.writeToTheLogFile(error);
-        }
-        else
-        {
-            System.out.println(info);
-            this.writeToTheLogFile(info);
-        }
+    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+    	final String msg = new StringBuilder().append(date)
+    			.append(prefix)
+    			.append(err ? "[ERROR] " : "[INFO] ")
+    			.append(toWrite)
+    			.toString();
+        if (err) System.err.println(msg);
+        else System.out.println(msg);
+
+        this.writeToTheLogFile(msg);
     }
 
     public void infoColor(@NotNull EnumLogColor color, String toWrite)
@@ -42,6 +47,7 @@ public final class Logger
     {
         this.message(false, message);
     }
+    
     public void err(String message)
     {
         this.message(true, message);
