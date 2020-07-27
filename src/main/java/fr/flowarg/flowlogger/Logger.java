@@ -9,9 +9,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.jetbrains.annotations.NotNull;
-
-public class Logger
+public class Logger implements ILogger
 {
     private final String prefix;
     private final File logFile;
@@ -36,23 +34,26 @@ public class Logger
         this.writeToTheLogFile(msg);
     }
 
-    public void infoColor(@NotNull EnumLogColor color, String toWrite)
+    public void infoColor(EnumLogColor color, String toWrite)
     {
         final String message = color.getColor() + prefix + "[INFO] " + toWrite + EnumLogColor.RESET.getColor();
         System.out.println(message);
         this.writeToTheLogFile(message);
     }
 
+    @Override
     public void info(String message)
     {
         this.message(false, message);
     }
     
+    @Override
     public void err(String message)
     {
         this.message(true, message);
     }
 
+    @Override
     public void warn(String message)
     {
         final String warn = EnumLogColor.YELLOW.getColor() + prefix + "[WARN] " + message + EnumLogColor.RESET.getColor();
@@ -64,6 +65,11 @@ public class Logger
     {
         try
         {
+        	if(!this.logFile.exists())
+        	{
+        		this.logFile.getParentFile().mkdirs();
+        		this.logFile.createNewFile();
+        	}
             final BufferedReader reader = new BufferedReader(new FileReader(this.logFile));
             final StringBuilder text = new StringBuilder();
 
@@ -87,15 +93,17 @@ public class Logger
         }
     }
 
-    public void printStackTrace(Throwable throwable)
+    @Override
+    public void printStackTrace(Throwable cause)
     {
-        this.printStackTrace("An error as occurred : ", throwable);
+        this.printStackTrace("An error as occurred : ", cause);
     }
 
-    public void printStackTrace(String errorName, @NotNull Throwable throwable)
+    @Override
+    public void printStackTrace(String errorName, Throwable cause)
     {
-        this.err(errorName + throwable.toString());
-        for (StackTraceElement trace : throwable.getStackTrace())
+        this.err(errorName + cause.toString());
+        for (StackTraceElement trace : cause.getStackTrace())
         {
             final String toPrint = "\tat " + trace.toString();
             this.writeToTheLogFile(toPrint);

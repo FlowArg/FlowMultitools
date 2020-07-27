@@ -1,10 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'idea'
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply plugin: 'maven'
 
 group 'fr.flowarg'
-version '1.0.2'
+version '1.0.3'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
@@ -20,6 +19,8 @@ task sourcesJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            from components.java
+            artifact tasks.sourcesJar
             pom {
                 groupId = project.group
                 version = project.version
@@ -43,19 +44,12 @@ publishing {
             }
         }
     }
-    repositories {
-		maven {
-			url "https://flowarg.github.io/maven/"
-		}
-	}
 }
 
 repositories {
     jcenter()
-    mavenCentral()
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:19.0.0'
     implementation 'org.codehaus.plexus:plexus-archiver:2.2'
 }

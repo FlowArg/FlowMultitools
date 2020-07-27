@@ -2,9 +2,6 @@ package fr.flowarg.flowio;
 
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.*;
@@ -21,16 +18,14 @@ import java.util.jar.JarFile;
 import java.util.zip.GZIPOutputStream;
 
 public final class FileUtils
-{
-    @NotNull
-    public static String getFileExtension(@NotNull final File file)
+{  
+    public static String getFileExtension(final File file)
     {
         final String fileName = file.getName();
         final int dotIndex = fileName.lastIndexOf(46);
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
     }
 
-    @NotNull
     public static String removeExtension(final String fileName)
     {
         if (fileName == null)
@@ -40,7 +35,7 @@ public final class FileUtils
         return fileName;
     }
 
-    public static void createFile(@NotNull final File file) throws IOException
+    public static void createFile(final File file) throws IOException
     {
         if (!file.exists())
         {
@@ -56,9 +51,8 @@ public final class FileUtils
         writer.flush();
         writer.close();
     }
-
-    @NotNull
-    public static String loadFile(@NotNull final File file) throws IOException
+    
+    public static String loadFile(final File file) throws IOException
     {
         if (file.exists())
         {
@@ -76,7 +70,7 @@ public final class FileUtils
         return "";
     }
 
-    public static void deleteDirectory(@NotNull final File folder)
+    public static void deleteDirectory(final File folder)
     {
         if (folder.exists() && folder.isDirectory())
         {
@@ -93,8 +87,7 @@ public final class FileUtils
         }
     }
 
-    @NotNull
-    public static ArrayList<File> listRecursive(@NotNull final File directory)
+    public static ArrayList<File> listRecursive(final File directory)
     {
         final ArrayList<File> files = new ArrayList<>();
         final File[] fs = directory.listFiles();
@@ -109,7 +102,7 @@ public final class FileUtils
         return files;
     }
 
-    public static void createDirectories(String location, @NotNull String... dirsToCreate) throws IOException
+    public static void createDirectories(String location, String... dirsToCreate) throws IOException
     {
         for (String s : dirsToCreate)
         {
@@ -119,32 +112,29 @@ public final class FileUtils
         }
     }
 
-    public static long getFileSizeMegaBytes(@NotNull File file)
+    public static long getFileSizeMegaBytes(File file)
     {
         return file.length() / (1024 * 1024);
     }
-    public static long getFileSizeKiloBytes(@NotNull File file)
+    public static long getFileSizeKiloBytes(File file)
     {
         return  file.length() / 1024;
     }
-    public static long getFileSizeBytes(@NotNull File file)
+    public static long getFileSizeBytes(File file)
     {
         return file.length();
     }
 
-    public static String getStringPathOfClass(@NotNull Class<?> classToGetPath)
+    public static String getStringPathOfClass(Class<?> classToGetPath)
     {
         return classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath();
     }
 
-    @NotNull
-    @Contract("_ -> new")
-    public static File getFilePathOfClass(@NotNull Class<?> classToGetPath)
+    public static File getFilePathOfClass(Class<?> classToGetPath)
     {
         return new File(classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath());
     }
-
-    @NotNull
+    
     public static String getMD5FromURL(String input)
     {
         try
@@ -179,8 +169,7 @@ public final class FileUtils
             throw new RuntimeException(ex);
         }
     }
-
-    @NotNull
+    
     public static String getFileChecksum(MessageDigest digest, File file) throws IOException
     {
         final FileInputStream fis = new FileInputStream(file);
@@ -202,7 +191,7 @@ public final class FileUtils
         return sb.toString();
     }
 
-    @NotNull
+    
     public static String getMD5ofFile(final File file) throws NoSuchAlgorithmException, IOException
     {
         final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
@@ -247,7 +236,7 @@ public final class FileUtils
         jar.close();
     }
 
-    public static void unzipJars(@NotNull JarPath... jars) throws IOException
+    public static void unzipJars(JarPath... jars) throws IOException
     {
         for (JarPath jar : jars)
         	unzipJar(jar.getDestination(), jar.getJarPath());    
@@ -277,7 +266,6 @@ public final class FileUtils
         }
     }
 
-    @Nullable
     public static String getSHA1(final File file)
     {
         try
@@ -302,8 +290,8 @@ public final class FileUtils
         return null;
     }
 
-    @NotNull
-    public static ArrayList<File> listFilesForFolder(@NotNull final File folder)
+    
+    public static ArrayList<File> listFilesForFolder(final File folder)
     {
         final ArrayList<File> files = new ArrayList<>();
         File[] listFiles;
@@ -317,8 +305,8 @@ public final class FileUtils
         return files;
     }
 
-    @NotNull
-    public static File[] list(@NotNull final File dir)
+    
+    public static File[] list(final File dir)
     {
         final File[] files = dir.listFiles();
         return files == null ? new File[0] : files;
