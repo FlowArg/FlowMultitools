@@ -110,6 +110,18 @@ public class Logger implements ILogger
             System.err.println(toPrint);
         }
     }
+    
+    @Override
+    public File getLogFile()
+    {
+        return this.logFile;
+    }
+    
+    @Override
+    public String getPrefix()
+    {
+		return this.prefix;
+	}
 
     public enum EnumLogColor
     {
@@ -134,10 +146,5 @@ public class Logger implements ILogger
         {
             return color;
         }
-    }
-
-    public File getLogFile()
-    {
-        return this.logFile;
     }
 }
