@@ -1,13 +1,15 @@
+[version]: https://api.bintray.com/packages/flowarg/maven/FlowMultitools/images/download.svg
+[download]: https://bintray.com/flowarg/maven/FlowMultitools/_latestVersion
+
+[ ![version][] ][download]
+
 # FlowMultitools
 
 Add FlowMultitools in your dependencies :
 
 ```groovy
 repositories {
-	maven {
-		name "Flow's Maven repository"
-		url = "https://flowarg.github.io/maven/"
-	}
+	jcenter()
 }
 ```
 
