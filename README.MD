@@ -13,6 +13,6 @@ repositories {
 
 ```groovy
 dependencies {
-	implementation 'fr.flowarg:flowmultitools:1.0.3'
+	implementation 'fr.flowarg:flowmultitools:1.0.4'
 }
 ```
