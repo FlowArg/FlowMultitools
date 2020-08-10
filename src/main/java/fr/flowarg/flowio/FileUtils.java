@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,7 +16,11 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public final class FileUtils
 {  
@@ -342,5 +347,113 @@ public final class FileUtils
             gzipOutputStream.finish();
             gzipOutputStream.close();
         }
+    }
+    
+    public static void unzipJarWithLZMACompat(final File destinationDir, final File jarFile) throws IOException
+    {
+    	final JarFile jar = new JarFile(jarFile);
+
+        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
+        {
+            final JarEntry entry = enums.nextElement();
+
+            final String fileName = destinationDir + File.separator + entry.getName();
+            final File file = new File(fileName);
+
+            if (fileName.endsWith("/")) file.mkdirs();
+        }
+
+        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
+        {
+            final JarEntry entry = enums.nextElement();
+
+            final String fileName = destinationDir + File.separator + entry.getName();
+            final File file = new File(fileName);
+
+            if (!fileName.endsWith("/"))
+            {
+                if (fileName.endsWith(".lzma"))
+                {
+                    new File(destinationDir, "data").mkdir();
+                    final InputStream stream = jar.getInputStream(entry);
+                    Files.copy(stream, new File(destinationDir, entry.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    stream.close();
+                }
+                else
+                {
+                    final InputStream is = jar.getInputStream(entry);
+                    final FileOutputStream fos = new FileOutputStream(file);
+
+                    while (is.available() > 0)
+                        fos.write(is.read());
+
+                    fos.close();
+                    is.close();
+                }
+                jar.getInputStream(entry).close();
+            }
+        }
+
+        jar.close();
+    }
+    
+    public static void compressFiles(File[] listFiles, File destZipFile) throws IOException
+    {
+        final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destZipFile));
+
+        for (File file : listFiles)
+        {
+            if (file.isDirectory()) addFolderToZip(file, file.getName(), zos);
+            else addFileToZip(file, zos);
+        }
+
+        zos.flush();
+        zos.close();
+    }
+
+    private static void addFolderToZip(File folder, String parentFolder, ZipOutputStream zos) throws IOException
+    {
+        for (File file : folder.listFiles())
+        {
+            if (file.isDirectory())
+            {
+                addFolderToZip(file, parentFolder + "/" + file.getName(), zos);
+                continue;
+            }
+            zos.putNextEntry(new ZipEntry(parentFolder + "/" + file.getName()));
+
+            final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            final byte[] buffer = new byte[4096];
+            int read;
+
+            while ((read = bis.read(buffer)) != -1)
+                zos.write(buffer, 0, read);
+
+            zos.closeEntry();
+            bis.close();
+        }
+    }
+
+    private static void addFileToZip(File file, ZipOutputStream zos) throws IOException
+    {
+        zos.putNextEntry(new ZipEntry(file.getName()));
+
+        final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+
+        final byte[] buffer = new byte[1024];
+        int read;
+        while ((read = bis.read(buffer)) != -1)
+            zos.write(buffer, 0, read);
+
+        zos.closeEntry();
+        bis.close();
+    }
+    
+    public static long getCRC32(File file) throws IOException
+    {
+    	final Checksum checksum = new CRC32();
+    	final byte[] bytes = Files.readAllBytes(file.toPath());
+    	checksum.update(bytes, 0, bytes.length);
+    	return checksum.getValue();
     }
 }

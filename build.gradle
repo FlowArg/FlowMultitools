@@ -1,19 +1,42 @@
+plugins {
+    id "com.jfrog.bintray" version "1.8.5"
+}
+
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.0.3'
+version '1.0.4'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
     options.encoding = 'UTF-8'
 }
 
 task sourcesJar(type: Jar) {
     classifier 'sources'
     from sourceSets.main.allSource
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USERNAME')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['mavenJava'] 
+    pkg {
+    	repo = 'maven'
+        name = 'FlowMultitools'
+        userOrg = 'flowarg'
+        licenses = ['GPL-3.0']
+        publicDownloadNumbers = true
+        vcsUrl = 'https://github.com/FlowArg/FlowMultiools.git'
+        version {
+        	name = 'v' + project.version
+        	released = new Date()
+        	vcsTag = 'v' + project.version
+    	}
+    }
 }
 
 publishing {
