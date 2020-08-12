@@ -91,6 +91,23 @@ public final class FileUtils
             folder.delete();
         }
     }
+	
+    public static void deleteRecursiveDirectory(final File folder)
+    {
+        if (folder.exists() && folder.isDirectory())
+        {
+            final ArrayList<File> files = listRecursive(folder);
+            if (files.isEmpty())
+            {
+                folder.delete();
+                return;
+            }
+            for (final File f : files)
+                f.delete();
+            
+            folder.delete();
+        }
+    }
 
     public static ArrayList<File> listRecursive(final File directory)
     {
