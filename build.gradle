@@ -7,7 +7,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.0.4'
+version '1.0.5'
 archivesBaseName = 'flowmultitools'
 
 compileJava {

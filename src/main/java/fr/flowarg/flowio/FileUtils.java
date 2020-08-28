@@ -1,15 +1,19 @@
 package fr.flowarg.flowio;
 
-import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
-import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
-
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -21,6 +25,11 @@ import java.util.zip.Checksum;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 public final class FileUtils
 {  
@@ -44,7 +53,7 @@ public final class FileUtils
     {
         if (!file.exists())
         {
-            file.mkdirs();
+            file.getParentFile().mkdirs();
             file.createNewFile();
         }
     }
@@ -79,7 +88,7 @@ public final class FileUtils
     {
         if (folder.exists() && folder.isDirectory())
         {
-            final ArrayList<File> files = listFilesForFolder(folder);
+            final ArrayList<File> files = listRecursive(folder);
             if (files.isEmpty())
             {
                 folder.delete();
@@ -90,6 +99,21 @@ public final class FileUtils
             
             folder.delete();
         }
+    }
+    
+    public static void deleteExclude(File toDelete, File... excludes)
+    {
+        boolean flag = true;
+        for (File exclude : excludes)
+        {
+            if(exclude.getAbsolutePath().equals(toDelete.getAbsolutePath()))
+            {
+                flag = false;
+                break;
+            }
+        }
+        if(flag)
+            toDelete.delete();
     }
 
     public static ArrayList<File> listRecursive(final File directory)
@@ -138,41 +162,6 @@ public final class FileUtils
     public static File getFilePathOfClass(Class<?> classToGetPath)
     {
         return new File(classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath());
-    }
-    
-    public static String getMD5FromURL(String input)
-    {
-        try
-        {
-            final MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream is = new URL(input).openStream();
-
-            try
-            {
-                is = new DigestInputStream(is, md);
-
-                final byte[] ignoredBuffer = new byte[8 * 1024];
-
-                while (is.read(ignoredBuffer) > 0) ;
-
-            }
-            finally
-            {
-                is.close();
-            }
-            final byte[] digest = md.digest();
-            final StringBuffer sb = new StringBuffer();
-
-            for (byte b : digest)
-                sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
-            
-            return sb.toString();
-
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
     }
     
     public static String getFileChecksum(MessageDigest digest, File file) throws IOException
@@ -293,21 +282,6 @@ public final class FileUtils
             e.printStackTrace();
         }
         return null;
-    }
-
-    
-    public static ArrayList<File> listFilesForFolder(final File folder)
-    {
-        final ArrayList<File> files = new ArrayList<>();
-        File[] listFiles;
-        for (int length = (listFiles = folder.listFiles()).length, i = 0; i < length; ++i)
-        {
-            final File fileEntry = listFiles[i];
-            if (fileEntry.isDirectory())
-                files.addAll(listFilesForFolder(fileEntry));           
-            files.add(fileEntry);
-        }
-        return files;
     }
 
     
