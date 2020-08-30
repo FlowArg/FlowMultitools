@@ -36,9 +36,17 @@ public class Logger implements ILogger
 
     public void infoColor(EnumLogColor color, String toWrite)
     {
-        final String message = color.getColor() + prefix + "[INFO] " + toWrite + EnumLogColor.RESET.getColor();
-        System.out.println(message);
-        this.writeToTheLogFile(message);
+    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+    	final String msg = new StringBuilder()
+    			.append(color.getColor())
+    			.append(date)
+    			.append(prefix)
+    			.append("[INFO] ")
+    			.append(toWrite)
+    			.append(EnumLogColor.RESET.getColor())
+    			.toString();
+        System.out.println(msg);
+        this.writeToTheLogFile(msg);
     }
 
     @Override
@@ -56,41 +64,52 @@ public class Logger implements ILogger
     @Override
     public void warn(String message)
     {
-        final String warn = EnumLogColor.YELLOW.getColor() + prefix + "[WARN] " + message + EnumLogColor.RESET.getColor();
+    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+    	final String warn = new StringBuilder()
+    			.append(EnumLogColor.YELLOW.getColor())
+    			.append(date)
+    			.append(prefix)
+    			.append("[WARN] ")
+    			.append(message)
+    			.append(EnumLogColor.RESET.getColor())
+    			.toString();
         System.out.println(warn);
         this.writeToTheLogFile(warn);
     }
 
     private void writeToTheLogFile(String toLog)
     {
-        try
-        {
-        	if(!this.logFile.exists())
-        	{
-        		this.logFile.getParentFile().mkdirs();
-        		this.logFile.createNewFile();
-        	}
-            final BufferedReader reader = new BufferedReader(new FileReader(this.logFile));
-            final StringBuilder text = new StringBuilder();
-
-            String line;
-
-            while ((line = reader.readLine()) != null)
+    	if(this.logFile != null)
+    	{
+            try
             {
-                text.append(line + "\n");
+            	if(!this.logFile.exists())
+            	{
+            		this.logFile.getParentFile().mkdirs();
+            		this.logFile.createNewFile();
+            	}
+                final BufferedReader reader = new BufferedReader(new FileReader(this.logFile));
+                final StringBuilder text = new StringBuilder();
+
+                String line;
+
+                while ((line = reader.readLine()) != null)
+                {
+                    text.append(line + "\n");
+                }
+                reader.close();
+
+                final String toWrite = text.toString() + toLog;
+                final BufferedWriter writer = new BufferedWriter(new FileWriter(this.logFile));
+
+                writer.write(toWrite);
+                writer.flush();
+                writer.close();
+            } catch (IOException e)
+            {
+                this.printStackTrace(e);
             }
-            reader.close();
-
-            final String toWrite = text.toString() + toLog;
-            final BufferedWriter writer = new BufferedWriter(new FileWriter(this.logFile));
-
-            writer.write(toWrite);
-            writer.flush();
-            writer.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+    	}
     }
 
     @Override
