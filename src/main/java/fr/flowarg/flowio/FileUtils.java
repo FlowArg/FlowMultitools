@@ -196,35 +196,31 @@ public final class FileUtils
     {
         final File file = new File(jarPath);
         final JarFile jar = new JarFile(file);
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();)
+	Enumeration<JarEntry> enu= jarfile.entries();
+        while(enu.hasMoreElements())
         {
-            final JarEntry entry = enums.nextElement();
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File f = new File(fileName);
-
-            if (fileName.endsWith("/")) f.mkdirs();
-        }
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();)
-        {
-            final JarEntry entry = enums.nextElement();
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File f = new File(fileName);
-
-            if (!fileName.endsWith("/"))
+            JarEntry je = enu.nextElement();
+            File fl = new File(destinationDir + File.separator + entry.getName());
+	    if(fl.getAbsolutePath().contains("META-INF")) continue;
+	    if (fl.getName().endsWith("/")) f.mkdirs();
+            if(!fl.exists())
             {
-                final InputStream is = jar.getInputStream(entry);
-                final FileOutputStream fos = new FileOutputStream(f);
-
-                while (is.available() > 0)
-                    fos.write(is.read());
-                    
-                fos.close();
-                is.close();
-            }	
+                fl.getParentFile().mkdirs();
+                fl = new java.io.File(tempDir, je.getName());
+            }
+            if(je.isDirectory())
+            {
+                continue;
+            }
+            InputStream is = jarfile.getInputStream(je);
+            FileOutputStream fo = new FileOutputStream(fl);
+            while(is.available()>0)
+            {
+                fo.write(is.read());
+            }
+            fo.close();
+            is.close();
         }
-        
         jar.close();
     }
 
