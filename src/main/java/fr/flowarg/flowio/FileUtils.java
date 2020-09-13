@@ -192,32 +192,30 @@ public final class FileUtils
         return getFileChecksum(md5Digest, file);
     }
 
-    public static void unzipJar(String destinationDir, String jarPath) throws IOException
+    public static void unzipJar(String destinationDir, String jarPath, String... args) throws IOException
     {
         final File file = new File(jarPath);
         final JarFile jar = new JarFile(file);
-	Enumeration<JarEntry> enu= jarfile.entries();
+        final Enumeration<JarEntry> enu = jar.entries();
         while(enu.hasMoreElements())
         {
-            JarEntry je = enu.nextElement();
-            File fl = new File(destinationDir + File.separator + entry.getName());
-	    if(fl.getAbsolutePath().contains("META-INF")) continue;
-	    if (fl.getName().endsWith("/")) f.mkdirs();
+            final JarEntry je = enu.nextElement();
+            final File fl = new File(destinationDir + File.separator + je.getName());
+            if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
+            	if(fl.getAbsolutePath().contains("META-INF")) continue;
+            if (fl.getName().endsWith("/")) fl.mkdirs();
             if(!fl.exists())
             {
                 fl.getParentFile().mkdirs();
-                fl = new java.io.File(tempDir, je.getName());
             }
             if(je.isDirectory())
             {
                 continue;
             }
-            InputStream is = jarfile.getInputStream(je);
-            FileOutputStream fo = new FileOutputStream(fl);
-            while(is.available()>0)
-            {
+            final InputStream is = jar.getInputStream(je);
+            final FileOutputStream fo = new FileOutputStream(fl);
+            while(is.available() > 0)
                 fo.write(is.read());
-            }
             fo.close();
             is.close();
         }
