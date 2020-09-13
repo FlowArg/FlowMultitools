@@ -76,6 +76,20 @@ public class Logger implements ILogger
         System.out.println(warn);
         this.writeToTheLogFile(warn);
     }
+    
+    @Override
+    public void debug(String message)
+    {
+    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+    	final String msg = new StringBuilder()
+    			.append(date)
+    			.append(prefix)
+    			.append("[DEBUG] ")
+    			.append(message)
+    			.toString();
+        System.out.println(msg);
+        this.writeToTheLogFile(msg);
+    }
 
     private void writeToTheLogFile(String toLog)
     {

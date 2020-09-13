@@ -200,7 +200,6 @@ public final class FileUtils
         for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();)
         {
             final JarEntry entry = enums.nextElement();
-
             final String fileName = destinationDir + File.separator + entry.getName();
             final File f = new File(fileName);
 
@@ -210,7 +209,6 @@ public final class FileUtils
         for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();)
         {
             final JarEntry entry = enums.nextElement();
-
             final String fileName = destinationDir + File.separator + entry.getName();
             final File f = new File(fileName);
 
@@ -221,10 +219,10 @@ public final class FileUtils
 
                 while (is.available() > 0)
                     fos.write(is.read());
-                
+                    
                 fos.close();
                 is.close();
-            }
+            }	
         }
         
         jar.close();
