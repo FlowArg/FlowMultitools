@@ -46,7 +46,7 @@ public final class Platform
         return System.getProperty("sun.arch.data.model");
     }
 
-    enum EnumOS
+    public enum EnumOS
     {
         MAC(Arrays.asList("mac", "osx", "macos", "darwin")),
         WINDOWS(Arrays.asList("windows", "win")),
