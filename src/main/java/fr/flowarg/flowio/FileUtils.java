@@ -26,8 +26,6 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
@@ -47,6 +45,15 @@ public final class FileUtils
         if (!getFileExtension(new File(fileName)).isEmpty())
             return fileName.substring(0, fileName.lastIndexOf(46));
         return fileName;
+    }
+    
+    public static File removeExtension(final File file) throws IOException
+    {
+    	if(getFileExtension(file) == null)
+    		return file;
+    	else if(!getFileExtension(file).isEmpty())
+    		return Files.move(file.toPath(), new File(removeExtension(file.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING).toFile();
+    	return file;
     }
 
     public static void createFile(final File file) throws IOException
@@ -252,28 +259,25 @@ public final class FileUtils
         }
     }
 
-    public static String getSHA1(final File file)
+    public static String getSHA1(final File file) throws NoSuchAlgorithmException, IOException
     {
-        try
+        try(final FileInputStream fi = new FileInputStream(file);final BufferedInputStream input = new BufferedInputStream(fi))
         {
-            try (final InputStream input = new FileInputStream(file))
-            {
-                final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
-                final byte[] buffer = new byte[8192];
-                for (int len = input.read(buffer); len != -1; len = input.read(buffer))
-                    sha1.update(buffer, 0, len);
-                return new HexBinaryAdapter().marshal(sha1.digest()).toLowerCase();
+        	final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+            final byte[] data = new byte[8192];
+            int read = 0; 
+            while ((read = input.read(data)) != -1) {
+                sha1.update(data, 0, read);
+            };
+            
+            final byte[] hashBytes = sha1.digest();
+            final StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < hashBytes.length; i++) {
+              sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            
+            return sb.toString();
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     
