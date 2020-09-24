@@ -20,7 +20,7 @@ public class Logger implements ILogger
         this.logFile = logFile;
     }
 
-    private void message(boolean err, String toWrite)
+    public void message(boolean err, String toWrite)
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
     	final String msg = new StringBuilder().append(date)
@@ -34,6 +34,7 @@ public class Logger implements ILogger
         this.writeToTheLogFile(msg);
     }
 
+    @Override
     public void infoColor(EnumLogColor color, String toWrite)
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
@@ -82,16 +83,19 @@ public class Logger implements ILogger
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
     	final String msg = new StringBuilder()
+    			.append(EnumLogColor.CYAN.getColor())
     			.append(date)
     			.append(prefix)
     			.append("[DEBUG] ")
     			.append(message)
+    			.append(EnumLogColor.RESET.getColor())
     			.toString();
         System.out.println(msg);
         this.writeToTheLogFile(msg);
     }
 
-    private void writeToTheLogFile(String toLog)
+    @Override
+    public void writeToTheLogFile(String toLog)
     {
     	if(this.logFile != null)
     	{
@@ -155,29 +159,4 @@ public class Logger implements ILogger
     {
 		return this.prefix;
 	}
-
-    public enum EnumLogColor
-    {
-        RESET("\u001B[0m"),
-        BLACK("\u001B[30m"),
-        RED("\u001B[31m"),
-        GREEN("\u001B[32m"),
-        YELLOW("\u001B[33m"),
-        BLUE("\u001B[34m"),
-        PURPLE("\u001B[35m"),
-        CYAN("\u001B[36m"),
-        WHITE("\u001B[37m");
-
-        private String color;
-
-        EnumLogColor(String color)
-        {
-            this.color = color;
-        }
-
-        public String getColor()
-        {
-            return color;
-        }
-    }
 }
