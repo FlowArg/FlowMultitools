@@ -1,16 +1,9 @@
 package fr.flowarg.flowio;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -20,14 +13,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.CRC32;
-import java.util.zip.Checksum;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
-import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
+import java.util.zip.*;
 
 public final class FileUtils
 {  
@@ -49,10 +35,8 @@ public final class FileUtils
     
     public static File removeExtension(final File file) throws IOException
     {
-    	if(getFileExtension(file) == null)
-    		return file;
-    	else if(!getFileExtension(file).isEmpty())
-    		return Files.move(file.toPath(), new File(removeExtension(file.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING).toFile();
+        if(!getFileExtension(file).isEmpty())
+            return Files.move(file.toPath(), new File(removeExtension(file.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING).toFile();
     	return file;
     }
 
@@ -173,7 +157,7 @@ public final class FileUtils
     
     public static String getFileChecksum(MessageDigest digest, File file) throws IOException
     {
-        final FileInputStream fis = new FileInputStream(file);
+        final BufferedInputStream fis = new BufferedInputStream(new FileInputStream(file));
 
         final byte[] byteArray = new byte[1024];
         int bytesCount;
@@ -239,8 +223,8 @@ public final class FileUtils
     {
 		private static final long serialVersionUID = 1L;
 		
-		private String destination;
-        private String jarPath;
+		private final String destination;
+        private final String jarPath;
 
         public JarPath(String destination, String jarPath)
         {
@@ -265,16 +249,15 @@ public final class FileUtils
         {
         	final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
             final byte[] data = new byte[8192];
-            int read = 0; 
+            int read;
             while ((read = input.read(data)) != -1) {
                 sha1.update(data, 0, read);
             };
             
             final byte[] hashBytes = sha1.digest();
-            final StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < hashBytes.length; i++) {
-              sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
+            final StringBuilder sb = new StringBuilder();
+            for (byte hashByte : hashBytes)
+                sb.append(Integer.toString((hashByte & 0xff) + 0x100, 16).substring(1));
             
             return sb.toString();
         }

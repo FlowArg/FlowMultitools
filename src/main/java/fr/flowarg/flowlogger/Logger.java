@@ -1,11 +1,6 @@
 package fr.flowarg.flowlogger;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,11 +18,7 @@ public class Logger implements ILogger
     public void message(boolean err, String toWrite)
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String msg = new StringBuilder().append(date)
-    			.append(prefix)
-    			.append(err ? "[ERROR] " : "[INFO] ")
-    			.append(toWrite)
-    			.toString();
+    	final String msg = date + prefix + (err ? "[ERROR] " : "[INFO] ") + toWrite;
         if (err) System.err.println(msg);
         else System.out.println(msg);
 
@@ -38,14 +29,7 @@ public class Logger implements ILogger
     public void infoColor(EnumLogColor color, String toWrite)
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String msg = new StringBuilder()
-    			.append(color.getColor())
-    			.append(date)
-    			.append(prefix)
-    			.append("[INFO] ")
-    			.append(toWrite)
-    			.append(EnumLogColor.RESET.getColor())
-    			.toString();
+    	final String msg = color.getColor() + date + prefix + "[INFO] " + toWrite + EnumLogColor.RESET.getColor();
         System.out.println(msg);
         this.writeToTheLogFile(msg);
     }
@@ -66,14 +50,7 @@ public class Logger implements ILogger
     public void warn(String message)
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String warn = new StringBuilder()
-    			.append(EnumLogColor.YELLOW.getColor())
-    			.append(date)
-    			.append(prefix)
-    			.append("[WARN] ")
-    			.append(message)
-    			.append(EnumLogColor.RESET.getColor())
-    			.toString();
+    	final String warn = EnumLogColor.YELLOW.getColor() + date + prefix + "[WARN] " + message + EnumLogColor.RESET.getColor();
         System.out.println(warn);
         this.writeToTheLogFile(warn);
     }
@@ -82,14 +59,7 @@ public class Logger implements ILogger
     public void debug(String message)
     {
     	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String msg = new StringBuilder()
-    			.append(EnumLogColor.CYAN.getColor())
-    			.append(date)
-    			.append(prefix)
-    			.append("[DEBUG] ")
-    			.append(message)
-    			.append(EnumLogColor.RESET.getColor())
-    			.toString();
+    	final String msg = EnumLogColor.CYAN.getColor() + date + prefix + "[DEBUG] " + message + EnumLogColor.RESET.getColor();
         System.out.println(msg);
         this.writeToTheLogFile(msg);
     }
@@ -113,7 +83,7 @@ public class Logger implements ILogger
 
                 while ((line = reader.readLine()) != null)
                 {
-                    text.append(line + "\n");
+                    text.append(line).append("\n");
                 }
                 reader.close();
 

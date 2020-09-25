@@ -1,11 +1,9 @@
 package fr.flowarg.flowutils;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Utils
 {
-	public static final Charset UTF8 = Charset.forName("UTF-8");
-	
     public static String empty(String baseStr, String str)
     {
         return baseStr.replace(str, "");
@@ -29,12 +27,12 @@ public class Utils
     
     public static byte[] fromString(String str)
     {
-    	return str.getBytes(UTF8);
+    	return str.getBytes(StandardCharsets.UTF_8);
     }
     
     public static String toString(byte[] bytes)
     {
-    	return new String(bytes, 0, bytes.length, UTF8);
+    	return new String(bytes, 0, bytes.length, StandardCharsets.UTF_8);
     }
     
     public static boolean checkString(String str)

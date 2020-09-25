@@ -52,7 +52,7 @@ public final class Platform
         WINDOWS(Arrays.asList("windows", "win")),
         LINUX(Arrays.asList("linux", "unix"));
 
-        private List<String> names;
+        private final List<String> names;
 
         EnumOS(List<String> names)
         {
