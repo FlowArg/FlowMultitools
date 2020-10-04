@@ -7,7 +7,7 @@ import java.util.Date;
 public class Logger implements ILogger
 {
     private final String prefix;
-    private final File logFile;
+    private File logFile;
 
     public Logger(String prefix, File logFile)
     {
@@ -123,7 +123,12 @@ public class Logger implements ILogger
     {
         return this.logFile;
     }
-    
+
+    public void setLogFile(File logFile)
+    {
+        this.logFile = logFile;
+    }
+
     @Override
     public String getPrefix()
     {
