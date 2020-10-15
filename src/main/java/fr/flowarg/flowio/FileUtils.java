@@ -37,7 +37,7 @@ public final class FileUtils
     {
         if(!getFileExtension(file).isEmpty())
             return Files.move(file.toPath(), new File(removeExtension(file.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING).toFile();
-    	return file;
+        return file;
     }
 
     public static void createFile(final File file) throws IOException
@@ -116,7 +116,7 @@ public final class FileUtils
         for (final File f : fs)
         {
             if (f.isDirectory())
-            	files.addAll(listRecursive(f));
+                files.addAll(listRecursive(f));
             files.add(f);
         }
         return files;
@@ -193,7 +193,7 @@ public final class FileUtils
             final JarEntry je = enu.nextElement();
             final File fl = new File(destinationDir + File.separator + je.getName());
             if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
-            	if(fl.getAbsolutePath().contains("META-INF")) continue;
+                if(fl.getAbsolutePath().contains("META-INF")) continue;
             if (fl.getName().endsWith("/")) fl.mkdirs();
             if(!fl.exists())
             {
@@ -216,14 +216,14 @@ public final class FileUtils
     public static void unzipJars(JarPath... jars) throws IOException
     {
         for (JarPath jar : jars)
-        	unzipJar(jar.getDestination(), jar.getJarPath());    
+            unzipJar(jar.getDestination(), jar.getJarPath());    
     }
 
     public static class JarPath implements Serializable
     {
-		private static final long serialVersionUID = 1L;
-		
-		private final String destination;
+        private static final long serialVersionUID = 1L;
+        
+        private final String destination;
         private final String jarPath;
 
         public JarPath(String destination, String jarPath)
@@ -247,12 +247,12 @@ public final class FileUtils
     {
         try(final FileInputStream fi = new FileInputStream(file);final BufferedInputStream input = new BufferedInputStream(fi))
         {
-        	final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+            final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
             final byte[] data = new byte[8192];
             int read;
             while ((read = input.read(data)) != -1) {
                 sha1.update(data, 0, read);
-            };
+            }
             
             final byte[] hashBytes = sha1.digest();
             final StringBuilder sb = new StringBuilder();
@@ -304,7 +304,7 @@ public final class FileUtils
     
     public static void unzipJarWithLZMACompat(final File destinationDir, final File jarFile) throws IOException
     {
-    	final JarFile jar = new JarFile(jarFile);
+        final JarFile jar = new JarFile(jarFile);
 
         for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
         {
@@ -404,9 +404,9 @@ public final class FileUtils
     
     public static long getCRC32(File file) throws IOException
     {
-    	final Checksum checksum = new CRC32();
-    	final byte[] bytes = Files.readAllBytes(file.toPath());
-    	checksum.update(bytes, 0, bytes.length);
-    	return checksum.getValue();
+        final Checksum checksum = new CRC32();
+        final byte[] bytes = Files.readAllBytes(file.toPath());
+        checksum.update(bytes, 0, bytes.length);
+        return checksum.getValue();
     }
 }

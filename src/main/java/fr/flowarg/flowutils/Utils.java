@@ -27,16 +27,16 @@ public class Utils
     
     public static byte[] fromString(String str)
     {
-    	return str.getBytes(StandardCharsets.UTF_8);
+        return str.getBytes(StandardCharsets.UTF_8);
     }
     
     public static String toString(byte[] bytes)
     {
-    	return new String(bytes, 0, bytes.length, StandardCharsets.UTF_8);
+        return new String(bytes, 0, bytes.length, StandardCharsets.UTF_8);
     }
     
     public static boolean checkString(String str)
     {
-    	return str != null && !str.trim().equals("");
+        return str != null && !str.trim().equals("");
     }
 }

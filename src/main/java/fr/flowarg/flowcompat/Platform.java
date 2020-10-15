@@ -21,8 +21,8 @@ public final class Platform
 
     public static boolean isOnWindows()
     {
-    	final EnumOS os = EnumOS.WINDOWS;
-    	final AtomicBoolean bool = new AtomicBoolean(false);
+        final EnumOS os = EnumOS.WINDOWS;
+        final AtomicBoolean bool = new AtomicBoolean(false);
         os.getNames().forEach(alias ->
         {
             if (OS.contains(alias)) bool.set(true);
@@ -32,8 +32,8 @@ public final class Platform
 
     public static boolean isOnLinux()
     {
-    	final EnumOS os = EnumOS.LINUX;
-    	final AtomicBoolean bool = new AtomicBoolean(false);
+        final EnumOS os = EnumOS.LINUX;
+        final AtomicBoolean bool = new AtomicBoolean(false);
         os.getNames().forEach(alias ->
         {
             if (OS.contains(alias)) bool.set(true);

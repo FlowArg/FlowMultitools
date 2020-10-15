@@ -4,18 +4,18 @@ import java.io.File;
 
 public interface ILogger
 {
-	void err(String message);
-	void info(String message);
-	void warn(String message);
-	void debug(String message);
-	void infoColor(EnumLogColor color, String message);
-	void printStackTrace(String errorName, Throwable cause);
-	void printStackTrace(Throwable cause);
-	File getLogFile();
-	String getPrefix();
-	
-	default void writeToTheLogFile(String toLog) {}
-	
+    void err(String message);
+    void info(String message);
+    void warn(String message);
+    void debug(String message);
+    void infoColor(EnumLogColor color, String message);
+    void printStackTrace(String errorName, Throwable cause);
+    void printStackTrace(Throwable cause);
+    File getLogFile();
+    String getPrefix();
+    
+    default void writeToTheLogFile(String toLog) {}
+    
     enum EnumLogColor
     {
         RESET("\u001B[0m"),

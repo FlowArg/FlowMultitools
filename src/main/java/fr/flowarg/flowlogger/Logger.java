@@ -17,8 +17,8 @@ public class Logger implements ILogger
 
     public void message(boolean err, String toWrite)
     {
-    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String msg = date + prefix + (err ? "[ERROR] " : "[INFO] ") + toWrite;
+        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String msg = date + prefix + (err ? "[ERROR] " : "[INFO] ") + toWrite;
         if (err) System.err.println(msg);
         else System.out.println(msg);
 
@@ -28,8 +28,8 @@ public class Logger implements ILogger
     @Override
     public void infoColor(EnumLogColor color, String toWrite)
     {
-    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String msg = color.getColor() + date + prefix + "[INFO] " + toWrite + EnumLogColor.RESET.getColor();
+        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String msg = color.getColor() + date + prefix + "[INFO] " + toWrite + EnumLogColor.RESET.getColor();
         System.out.println(msg);
         this.writeToTheLogFile(msg);
     }
@@ -49,8 +49,8 @@ public class Logger implements ILogger
     @Override
     public void warn(String message)
     {
-    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String warn = EnumLogColor.YELLOW.getColor() + date + prefix + "[WARN] " + message + EnumLogColor.RESET.getColor();
+        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String warn = EnumLogColor.YELLOW.getColor() + date + prefix + "[WARN] " + message + EnumLogColor.RESET.getColor();
         System.out.println(warn);
         this.writeToTheLogFile(warn);
     }
@@ -58,8 +58,8 @@ public class Logger implements ILogger
     @Override
     public void debug(String message)
     {
-    	final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-    	final String msg = EnumLogColor.CYAN.getColor() + date + prefix + "[DEBUG] " + message + EnumLogColor.RESET.getColor();
+        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String msg = EnumLogColor.CYAN.getColor() + date + prefix + "[DEBUG] " + message + EnumLogColor.RESET.getColor();
         System.out.println(msg);
         this.writeToTheLogFile(msg);
     }
@@ -67,15 +67,15 @@ public class Logger implements ILogger
     @Override
     public void writeToTheLogFile(String toLog)
     {
-    	if(this.logFile != null)
-    	{
+        if(this.logFile != null)
+        {
             try
             {
-            	if(!this.logFile.exists())
-            	{
-            		this.logFile.getParentFile().mkdirs();
-            		this.logFile.createNewFile();
-            	}
+                if(!this.logFile.exists())
+                {
+                    this.logFile.getParentFile().mkdirs();
+                    this.logFile.createNewFile();
+                }
                 final BufferedReader reader = new BufferedReader(new FileReader(this.logFile));
                 final StringBuilder text = new StringBuilder();
 
@@ -97,7 +97,7 @@ public class Logger implements ILogger
             {
                 this.printStackTrace(e);
             }
-    	}
+        }
     }
 
     @Override
@@ -132,6 +132,6 @@ public class Logger implements ILogger
     @Override
     public String getPrefix()
     {
-		return this.prefix;
-	}
+        return this.prefix;
+    }
 }
