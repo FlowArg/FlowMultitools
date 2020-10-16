@@ -12,6 +12,7 @@ public interface ILogger
     void printStackTrace(String errorName, Throwable cause);
     void printStackTrace(Throwable cause);
     File getLogFile();
+    void setLogFile(File logFile);
     String getPrefix();
     
     default void writeToTheLogFile(String toLog) {}
