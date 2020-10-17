@@ -16,6 +16,7 @@ public interface ILogger
     String getPrefix();
     
     default void writeToTheLogFile(String toLog) {}
+    default void close() {}
     
     enum EnumLogColor
     {

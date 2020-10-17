@@ -1,7 +1,6 @@
 package fr.flowarg.flowlogger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -11,19 +10,27 @@ public class Logger implements ILogger
 {
     private final String prefix;
     private File logFile;
-    private final PrintWriter writer;
+    private PrintWriter writer;
 
     public Logger(String prefix, File logFile)
     {
         this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
         this.logFile = logFile;
-        try
+        if(this.logFile != null)
         {
-            this.writer = new PrintWriter(this.logFile);
-            Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
-        } catch (FileNotFoundException e)
-        {
-            throw new RuntimeException(e);
+            try
+            {
+                if(!this.logFile.exists())
+                {
+                    this.logFile.getParentFile().mkdirs();
+                    this.logFile.createNewFile();
+                }
+                this.writer = new PrintWriter(this.logFile);
+                Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
+            } catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -119,7 +126,8 @@ public class Logger implements ILogger
         }
     }
 
-    public void forceCloseStream()
+    @Override
+    public void close()
     {
         this.writer.close();
     }
