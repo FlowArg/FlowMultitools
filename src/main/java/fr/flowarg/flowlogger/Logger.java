@@ -99,8 +99,11 @@ public class Logger implements ILogger
                     this.logFile.createNewFile();
                 }
 
-                this.writer.println(toLog);
-                this.writer.flush();
+                if(this.writer != null)
+                {
+                    this.writer.println(toLog);
+                    this.writer.flush();
+                }
             } catch (IOException e)
             {
                 this.printStackTrace(e);
