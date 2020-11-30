@@ -7,7 +7,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.2.0'
+version '1.2.1'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
@@ -25,22 +25,22 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
     publications = ['mavenJava'] 
     pkg {
-    	repo = 'maven'
+        repo = 'maven'
         name = 'FlowMultitools'
         userOrg = 'flowarg'
         licenses = ['GPL-3.0']
         publicDownloadNumbers = true
         vcsUrl = 'https://github.com/FlowArg/FlowMultiools.git'
         version {
-        	name = 'v' + project.version
-        	released = new Date()
-        	vcsTag = 'v' + project.version
-    	}
+            name = 'v' + project.version
+            released = new Date()
+            vcsTag = 'v' + project.version
+        }
     }
 }
 
 artifacts {
-	archives sourcesJar
+    archives sourcesJar
 }
 
 publishing {
@@ -62,12 +62,12 @@ publishing {
                 }
 
                 licenses {
-					license {
-						name = 'LICENSE'
-						url = 'https://github.com/FlowArg/FlowMultitools/blob/master/LICENSE'
-						distribution = 'repo'
-					}
-				}
+                    license {
+                        name = 'LICENSE'
+                        url = 'https://github.com/FlowArg/FlowMultitools/blob/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
             }
         }
     }

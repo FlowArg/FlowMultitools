@@ -37,10 +37,9 @@ public class Logger implements ILogger
     public void message(boolean err, String toWrite)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + (err ? "[ERROR] " : "[INFO] ") + toWrite;
+        final String msg = date + prefix + (err ? "[ERROR]: " : "[INFO]: ") + toWrite;
         if (err) System.out.println(EnumLogColor.RED.getColor() + msg + EnumLogColor.RESET.getColor());
         else System.out.println(msg);
-
         this.writeToTheLogFile(msg);
     }
 
@@ -48,7 +47,7 @@ public class Logger implements ILogger
     public void infoColor(EnumLogColor color, String toWrite)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + "[INFO] " + toWrite;
+        final String msg = date + prefix + "[INFO]: " + toWrite;
         final String coloredMessage = color.getColor() + msg + EnumLogColor.RESET.getColor();
         System.out.println(coloredMessage);
         this.writeToTheLogFile(msg);
@@ -70,7 +69,7 @@ public class Logger implements ILogger
     public void warn(String message)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + "[WARN] " + message;
+        final String msg = date + prefix + "[WARN]: " + message;
         final String coloredWarn = EnumLogColor.YELLOW.getColor() + msg + EnumLogColor.RESET.getColor();
         System.out.println(coloredWarn);
         this.writeToTheLogFile(msg);
@@ -80,7 +79,7 @@ public class Logger implements ILogger
     public void debug(String message)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + "[DEBUG] " + message;
+        final String msg = date + prefix + "[DEBUG]: " + message;
         final String coloredMessage = EnumLogColor.CYAN.getColor() + msg + EnumLogColor.RESET.getColor();
         System.out.println(coloredMessage);
         this.writeToTheLogFile(msg);

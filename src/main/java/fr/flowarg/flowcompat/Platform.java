@@ -40,6 +40,17 @@ public final class Platform
         });
         return bool.get();
     }
+    
+    public static EnumOS getCurrentPlatform()
+    {
+        for(EnumOS en : EnumOS.values())
+        {
+            if(en.getNames().contains(OS))
+                return en;
+        }
+        
+        return null;
+    }
 
     public static String getArch()
     {
