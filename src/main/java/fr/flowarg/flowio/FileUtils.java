@@ -1,8 +1,5 @@
 package fr.flowarg.flowio;
 
-import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
-import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,9 +8,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.*;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
 
 public final class FileUtils
 {  
@@ -79,12 +78,7 @@ public final class FileUtils
     {
         if (folder.exists() && folder.isDirectory())
         {
-            final ArrayList<File> files = listRecursive(folder);
-            if (files.isEmpty())
-            {
-                folder.delete();
-                return;
-            }
+            final List<File> files = listRecursive(folder);
             for (final File f : files)
                 f.delete();
             
@@ -107,9 +101,9 @@ public final class FileUtils
             toDelete.delete();
     }
 
-    public static ArrayList<File> listRecursive(final File directory)
+    public static List<File> listRecursive(final File directory)
     {
-        final ArrayList<File> files = new ArrayList<>();
+        final List<File> files = new ArrayList<>();
         final File[] fs = directory.listFiles();
         if (fs == null) return files;
 
@@ -136,10 +130,12 @@ public final class FileUtils
     {
         return file.length() / (1024 * 1024);
     }
+
     public static long getFileSizeKiloBytes(File file)
     {
         return  file.length() / 1024;
     }
+
     public static long getFileSizeBytes(File file)
     {
         return file.length();
@@ -196,13 +192,9 @@ public final class FileUtils
                 if(fl.getAbsolutePath().contains("META-INF")) continue;
             if (fl.getName().endsWith("/")) fl.mkdirs();
             if(!fl.exists())
-            {
                 fl.getParentFile().mkdirs();
-            }
             if(je.isDirectory())
-            {
                 continue;
-            }
             final InputStream is = jar.getInputStream(je);
             final FileOutputStream fo = new FileOutputStream(fl);
             while(is.available() > 0)
@@ -250,9 +242,8 @@ public final class FileUtils
             final MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
             final byte[] data = new byte[8192];
             int read;
-            while ((read = input.read(data)) != -1) {
+            while ((read = input.read(data)) != -1)
                 sha1.update(data, 0, read);
-            }
             
             final byte[] hashBytes = sha1.digest();
             final StringBuilder sb = new StringBuilder();
@@ -263,143 +254,10 @@ public final class FileUtils
         }
     }
 
-    
     public static File[] list(final File dir)
     {
         final File[] files = dir.listFiles();
         return files == null ? new File[0] : files;
-    }
-
-    public static void decompressTarArchive(final File tarGzFile, final File destinationDir)
-    {
-        final TarGZipUnArchiver unArchiver = new TarGZipUnArchiver();
-        final ConsoleLoggerManager console = new ConsoleLoggerManager();
-        console.initialize();
-        unArchiver.enableLogging(console.getLoggerForComponent("[Launcher - Guns of Chickens]"));
-        unArchiver.setSourceFile(tarGzFile);
-        unArchiver.setDestDirectory(destinationDir);
-        destinationDir.mkdirs();
-        unArchiver.extract();
-    }
-
-    public static void gzipFile(String baseFile, String newFile) throws IOException
-    {
-        final byte[] buffer = new byte[1024];
-
-        if(baseFile != null && newFile != null)
-        {
-            final FileOutputStream fileOutputStream = new FileOutputStream(newFile);
-            final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-            final FileInputStream fileInputStream = new FileInputStream(baseFile);
-            int bytesRead;
-
-            while ((bytesRead = fileInputStream.read(buffer)) > 0)
-                gzipOutputStream.write(buffer, 0, bytesRead);
-
-            fileInputStream.close();
-            gzipOutputStream.finish();
-            gzipOutputStream.close();
-        }
-    }
-    
-    public static void unzipJarWithLZMACompat(final File destinationDir, final File jarFile) throws IOException
-    {
-        final JarFile jar = new JarFile(jarFile);
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File file = new File(fileName);
-
-            if (fileName.endsWith("/")) file.mkdirs();
-        }
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File file = new File(fileName);
-
-            if (!fileName.endsWith("/"))
-            {
-                if (fileName.endsWith(".lzma"))
-                {
-                    new File(destinationDir, "data").mkdir();
-                    final InputStream stream = jar.getInputStream(entry);
-                    Files.copy(stream, new File(destinationDir, entry.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    stream.close();
-                }
-                else
-                {
-                    final InputStream is = jar.getInputStream(entry);
-                    final FileOutputStream fos = new FileOutputStream(file);
-
-                    while (is.available() > 0)
-                        fos.write(is.read());
-
-                    fos.close();
-                    is.close();
-                }
-                jar.getInputStream(entry).close();
-            }
-        }
-
-        jar.close();
-    }
-    
-    public static void compressFiles(File[] listFiles, File destZipFile) throws IOException
-    {
-        final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destZipFile));
-
-        for (File file : listFiles)
-        {
-            if (file.isDirectory()) addFolderToZip(file, file.getName(), zos);
-            else addFileToZip(file, zos);
-        }
-
-        zos.flush();
-        zos.close();
-    }
-
-    private static void addFolderToZip(File folder, String parentFolder, ZipOutputStream zos) throws IOException
-    {
-        for (File file : folder.listFiles())
-        {
-            if (file.isDirectory())
-            {
-                addFolderToZip(file, parentFolder + "/" + file.getName(), zos);
-                continue;
-            }
-            zos.putNextEntry(new ZipEntry(parentFolder + "/" + file.getName()));
-
-            final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-            final byte[] buffer = new byte[4096];
-            int read;
-
-            while ((read = bis.read(buffer)) != -1)
-                zos.write(buffer, 0, read);
-
-            zos.closeEntry();
-            bis.close();
-        }
-    }
-
-    private static void addFileToZip(File file, ZipOutputStream zos) throws IOException
-    {
-        zos.putNextEntry(new ZipEntry(file.getName()));
-
-        final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-
-        final byte[] buffer = new byte[1024];
-        int read;
-        while ((read = bis.read(buffer)) != -1)
-            zos.write(buffer, 0, read);
-
-        zos.closeEntry();
-        bis.close();
     }
     
     public static long getCRC32(File file) throws IOException
