@@ -1,20 +1,19 @@
-package fr.flowarg.flowutils;
+package fr.flowarg.flowstringer;
 
 import java.nio.charset.StandardCharsets;
 
-public class Utils
+public class StringUtils
 {
     public static String empty(String baseStr, String str)
     {
         return baseStr.replace(str, "");
     }
 
-    public static void exit(int exitCode, boolean halt)
+    public static char getFirstChar(String str)
     {
-        if (halt) Runtime.getRuntime().halt(exitCode);
-        else System.exit(exitCode);
+        return str.toCharArray()[0];
     }
-    
+
     public static char getLastChar(String str)
     {
         return str.toCharArray()[str.length() - 1];

@@ -8,6 +8,12 @@ public final class Platform
 {
     public static final String OS = System.getProperty("os.name").toLowerCase();
 
+    public static void exit(int exitCode, boolean halt)
+    {
+        if (halt) Runtime.getRuntime().halt(exitCode);
+        else System.exit(exitCode);
+    }
+
     public static boolean isOnMac()
     {
         final EnumOS os = EnumOS.MAC;
