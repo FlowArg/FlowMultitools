@@ -1,7 +1,6 @@
 package fr.flowarg.flowzipper;
 
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
-import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,9 +17,6 @@ public class ZipUtils
     public static void decompressTarArchive(final File tarGzFile, final File destinationDir)
     {
         final TarGZipUnArchiver unArchiver = new TarGZipUnArchiver();
-        final ConsoleLoggerManager console = new ConsoleLoggerManager();
-        console.initialize();
-        unArchiver.enableLogging(console.getLoggerForComponent("[Launcher - Guns of Chickens]"));
         unArchiver.setSourceFile(tarGzFile);
         unArchiver.setDestDirectory(destinationDir);
         destinationDir.mkdirs();
@@ -35,7 +31,7 @@ public class ZipUtils
         {
             final FileOutputStream fileOutputStream = new FileOutputStream(newFile);
             final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-            final FileInputStream fileInputStream = new FileInputStream(baseFile);
+            final BufferedInputStream fileInputStream = new BufferedInputStream(new FileInputStream(baseFile));
             int bytesRead;
 
             while ((bytesRead = fileInputStream.read(buffer)) > 0)
