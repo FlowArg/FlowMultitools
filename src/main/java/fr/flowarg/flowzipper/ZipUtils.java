@@ -1,5 +1,6 @@
 package fr.flowarg.flowzipper;
 
+import fr.flowarg.flowio.FileUtils;
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 
 import java.io.*;
@@ -107,7 +108,7 @@ public class ZipUtils
 
     private static void addFolderToZip(File folder, String parentFolder, ZipOutputStream zos) throws IOException
     {
-        for (File file : folder.listFiles())
+        for (File file : FileUtils.list(folder))
         {
             if (file.isDirectory())
             {

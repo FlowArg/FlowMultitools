@@ -104,8 +104,7 @@ public final class FileUtils
     public static List<File> listRecursive(final File directory)
     {
         final List<File> files = new ArrayList<>();
-        final File[] fs = directory.listFiles();
-        if (fs == null) return files;
+        final File[] fs = list(directory);
 
         for (final File f : fs)
         {
