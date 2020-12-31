@@ -2,6 +2,7 @@ package fr.flowarg.flowzipper;
 
 import fr.flowarg.flowio.FileUtils;
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
+import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,7 +19,10 @@ public class ZipUtils
     public static void decompressTarArchive(final File tarGzFile, final File destinationDir)
     {
         final TarGZipUnArchiver unArchiver = new TarGZipUnArchiver();
+        final ConsoleLoggerManager loggerManager = new ConsoleLoggerManager();
+        loggerManager.initialize();
         unArchiver.setSourceFile(tarGzFile);
+        unArchiver.enableLogging(loggerManager.getLoggerForComponent("[FileUtils]"));
         unArchiver.setDestDirectory(destinationDir);
         destinationDir.mkdirs();
         unArchiver.extract();
