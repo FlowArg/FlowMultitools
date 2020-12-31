@@ -9,12 +9,12 @@ Add FlowMultitools in your dependencies :
 
 ```groovy
 repositories {
-	jcenter()
+    jcenter()
 }
 ```
 
 ```groovy
 dependencies {
-	implementation 'fr.flowarg:flowmultitools:1.0.4'
+    implementation 'fr.flowarg:flowmultitools:VERSION'
 }
 ```
