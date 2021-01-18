@@ -2,7 +2,7 @@ package fr.flowarg.flowstringer;
 
 import java.nio.charset.StandardCharsets;
 
-public class StringUtils
+public final class StringUtils
 {
     public static String empty(String baseStr, String str)
     {

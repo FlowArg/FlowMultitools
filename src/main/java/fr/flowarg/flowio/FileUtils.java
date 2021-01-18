@@ -1,16 +1,13 @@
 package fr.flowarg.flowio;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.charset.Charset;
+import java.nio.file.*;
+import java.nio.file.attribute.FileAttribute;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
@@ -39,6 +36,11 @@ public final class FileUtils
         return file;
     }
 
+    /**
+     * @deprecated since 1.2.4. use {@link Files#createFile(Path, FileAttribute[])}
+     * Will be removed in a future release.
+     */
+    @Deprecated
     public static void createFile(final File file) throws IOException
     {
         if (!file.exists())
@@ -48,6 +50,11 @@ public final class FileUtils
         }
     }
 
+    /**
+     * @deprecated since 1.2.4. Use {@link Files#write(Path, Iterable, Charset, OpenOption...)} instead.
+     * Will be removed in a future release.
+     */
+    @Deprecated
     public static void saveFile(File file, String text) throws IOException
     {
         final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -55,7 +62,12 @@ public final class FileUtils
         writer.flush();
         writer.close();
     }
-    
+
+    /**
+     * @deprecated Deprecated since 1.2.4. Use {@link Files#readAllLines(Path, Charset)} instead.
+     * Will be removed in a future release.
+     */
+    @Deprecated
     public static String loadFile(final File file) throws IOException
     {
         if (file.exists())
@@ -97,8 +109,7 @@ public final class FileUtils
                 break;
             }
         }
-        if(flag)
-            toDelete.delete();
+        if(flag) toDelete.delete();
     }
 
     public static List<File> listRecursive(final File directory)
@@ -108,8 +119,7 @@ public final class FileUtils
 
         for (final File f : fs)
         {
-            if (f.isDirectory())
-                files.addAll(listRecursive(f));
+            if (f.isDirectory()) files.addAll(listRecursive(f));
             files.add(f);
         }
         return files;
@@ -176,62 +186,6 @@ public final class FileUtils
     {
         final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
         return getFileChecksum(md5Digest, file);
-    }
-
-    public static void unzipJar(String destinationDir, String jarPath, String... args) throws IOException
-    {
-        final File file = new File(jarPath);
-        final JarFile jar = new JarFile(file);
-        final Enumeration<JarEntry> enu = jar.entries();
-        while(enu.hasMoreElements())
-        {
-            final JarEntry je = enu.nextElement();
-            final File fl = new File(destinationDir + File.separator + je.getName());
-            if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
-                if(fl.getAbsolutePath().contains("META-INF")) continue;
-            if (fl.getName().endsWith("/")) fl.mkdirs();
-            if(!fl.exists())
-                fl.getParentFile().mkdirs();
-            if(je.isDirectory())
-                continue;
-            final InputStream is = jar.getInputStream(je);
-            final FileOutputStream fo = new FileOutputStream(fl);
-            while(is.available() > 0)
-                fo.write(is.read());
-            fo.close();
-            is.close();
-        }
-        jar.close();
-    }
-
-    public static void unzipJars(JarPath... jars) throws IOException
-    {
-        for (JarPath jar : jars)
-            unzipJar(jar.getDestination(), jar.getJarPath());    
-    }
-
-    public static class JarPath implements Serializable
-    {
-        private static final long serialVersionUID = 1L;
-        
-        private final String destination;
-        private final String jarPath;
-
-        public JarPath(String destination, String jarPath)
-        {
-            this.destination = destination;
-            this.jarPath = jarPath;
-        }
-
-        public String getDestination()
-        {
-            return destination;
-        }
-
-        public String getJarPath()
-        {
-            return jarPath;
-        }
     }
 
     public static String getSHA1(final File file) throws NoSuchAlgorithmException, IOException

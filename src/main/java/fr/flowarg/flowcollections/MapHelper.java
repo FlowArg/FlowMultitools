@@ -3,7 +3,7 @@ package fr.flowarg.flowcollections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapHelper
+public final class MapHelper
 {
     public static <K, V> Map<K, V> of()
     {

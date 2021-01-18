@@ -14,7 +14,7 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ZipUtils
+public final class ZipUtils
 {
     public static void decompressTarArchive(final File tarGzFile, final File destinationDir)
     {
@@ -22,7 +22,7 @@ public class ZipUtils
         final ConsoleLoggerManager loggerManager = new ConsoleLoggerManager();
         loggerManager.initialize();
         unArchiver.setSourceFile(tarGzFile);
-        unArchiver.enableLogging(loggerManager.getLoggerForComponent("[FileUtils]"));
+        unArchiver.enableLogging(loggerManager.getLoggerForComponent("[FlowMultitools]"));
         unArchiver.setDestDirectory(destinationDir);
         destinationDir.mkdirs();
         unArchiver.extract();
@@ -139,12 +139,71 @@ public class ZipUtils
 
         final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 
-        final byte[] buffer = new byte[1024];
         int read;
+        final byte[] buffer = new byte[1024];
+
         while ((read = bis.read(buffer)) != -1)
             zos.write(buffer, 0, read);
 
         zos.closeEntry();
         bis.close();
+    }
+
+    public static void unzipJar(String destinationDir, String jarPath, String... args) throws IOException
+    {
+        final File file = new File(jarPath);
+        final JarFile jar = new JarFile(file);
+        final Enumeration<JarEntry> enu = jar.entries();
+        while(enu.hasMoreElements())
+        {
+            final JarEntry je = enu.nextElement();
+            final File fl = new File(destinationDir + File.separator + je.getName());
+
+            if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
+                if(fl.getAbsolutePath().contains("META-INF")) continue;
+            if (fl.getName().endsWith("/")) fl.mkdirs();
+            if(!fl.exists())
+                fl.getParentFile().mkdirs();
+            if(je.isDirectory())
+                continue;
+
+            final InputStream is = jar.getInputStream(je);
+            final FileOutputStream fo = new FileOutputStream(fl);
+            while(is.available() > 0)
+                fo.write(is.read());
+            fo.close();
+            is.close();
+        }
+        jar.close();
+    }
+
+    public static void unzipJars(JarPath... jars) throws IOException
+    {
+        for (JarPath jar : jars)
+            unzipJar(jar.getDestination(), jar.getJarPath());
+    }
+
+    public static class JarPath implements Serializable
+    {
+        private static final long serialVersionUID = 1L;
+
+        private final String destination;
+        private final String jarPath;
+
+        public JarPath(String destination, String jarPath)
+        {
+            this.destination = destination;
+            this.jarPath = jarPath;
+        }
+
+        public String getDestination()
+        {
+            return destination;
+        }
+
+        public String getJarPath()
+        {
+            return jarPath;
+        }
     }
 }

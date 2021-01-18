@@ -7,7 +7,7 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.2.3'
+version '1.2.4'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
@@ -36,6 +36,14 @@ bintray {
             released = new Date()
             vcsTag = 'v' + project.version
         }
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+                'Automatic-Module-Name': 'flowmultitools'
+        ])
     }
 }
 
