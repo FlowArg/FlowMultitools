@@ -1,5 +1,5 @@
-[version]: https://api.bintray.com/packages/flowarg/maven/FlowMultitools/images/download.svg
-[download]: https://bintray.com/flowarg/maven/FlowMultitools/_latestVersion
+[version]: https://img.shields.io/maven-central/v/fr.flowarg/flowmultitools.svg?label=Download
+[download]: https://search.maven.org/search?q=g:%22fr.flowarg%22%20AND%20a:%22flowmultitools%22
 
 [ ![version][] ][download]
 
@@ -9,7 +9,7 @@ Add FlowMultitools in your dependencies :
 
 ```groovy
 repositories {
-    jcenter()
+    mavenCentral() // FlowMultitools has migrated to MavenCentral and abandoned jcenter. Old libraries are still avaiable in jcenter repo until it is down.
 }
 ```
 

@@ -1,10 +1,7 @@
-plugins {
-    id "com.jfrog.bintray" version "1.8.5"
-}
-
 apply plugin: 'java-library'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 group 'fr.flowarg'
 version '1.2.4'
@@ -20,23 +17,9 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-bintray {
-    user = System.getenv('BINTRAY_USERNAME')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['mavenJava'] 
-    pkg {
-        repo = 'maven'
-        name = 'FlowMultitools'
-        userOrg = 'flowarg'
-        licenses = ['GPL-3.0']
-        publicDownloadNumbers = true
-        vcsUrl = 'https://github.com/FlowArg/FlowMultiools.git'
-        version {
-            name = 'v' + project.version
-            released = new Date()
-            vcsTag = 'v' + project.version
-        }
-    }
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
 }
 
 jar {
@@ -48,7 +31,7 @@ jar {
 }
 
 artifacts {
-    archives sourcesJar
+    archives sourcesJar, javadocJar
 }
 
 publishing {
@@ -56,29 +39,55 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             artifact tasks.sourcesJar
+            artifact tasks.javadocJar
+            
             pom {
                 groupId = project.group
                 version = project.version
                 artifactId = 'flowmultitools'
                 name = project.name
-                description = 'FlowMultitools is a library for my projects'
+                description = 'FlowMultitools is a tool-library for my projects'
                 url = 'https://github.com/FlowArg/FlowMultitools'
 
-                issueManagement {
-                    system = 'github'
-                    url = 'https://github.com/FlowArg/FlowMultitools/issues'
+                scm {
+                    connection = 'scm:git:git://github.com/FlowArg/FlowMultitools.git'
+                    developerConnection = 'scm:git:ssh://github.com:FlowArg/FlowMultitools.git'
+                    url = 'http://github.com/FlowArg/FlowMultitools/tree/master'
                 }
 
                 licenses {
                     license {
-                        name = 'LICENSE'
-                        url = 'https://github.com/FlowArg/FlowMultitools/blob/master/LICENSE'
-                        distribution = 'repo'
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'flowarg'
+                        name = 'Flow Arg'
+                        email = 'coutureflorence3@gmail.com'
                     }
                 }
             }
         }
     }
+    
+    repositories {
+        maven {
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = project.version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 repositories {
