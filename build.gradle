@@ -18,7 +18,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
+    classifier 'javadoc'
     from javadoc
 }
 
