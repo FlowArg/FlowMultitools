@@ -38,8 +38,8 @@ public class Logger implements ILogger
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
         final String msg = date + prefix + (err ? "[ERROR]: " : "[INFO]: ") + toWrite;
-        if (err) System.out.println(EnumLogColor.RED + msg + EnumLogColor.RESET);
-        else System.out.println(msg);
+        if (err) System.out.printf("%s\n", EnumLogColor.RED + msg + EnumLogColor.RESET);
+        else System.out.printf("%s", msg);
         this.writeToTheLogFile(msg);
     }
 
@@ -49,7 +49,7 @@ public class Logger implements ILogger
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
         final String msg = date + prefix + "[INFO]: " + toWrite;
         final String coloredMessage = color + msg + EnumLogColor.RESET;
-        System.out.println(coloredMessage);
+        System.out.printf("%s", coloredMessage);
         this.writeToTheLogFile(msg);
     }
 
@@ -71,7 +71,7 @@ public class Logger implements ILogger
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
         final String msg = date + prefix + "[WARN]: " + message;
         final String coloredWarn = EnumLogColor.YELLOW + msg + EnumLogColor.RESET;
-        System.out.println(coloredWarn);
+        System.out.printf("%s", coloredWarn);
         this.writeToTheLogFile(msg);
     }
     
@@ -81,7 +81,7 @@ public class Logger implements ILogger
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
         final String msg = date + prefix + "[DEBUG]: " + message;
         final String coloredMessage = EnumLogColor.CYAN + msg + EnumLogColor.RESET;
-        System.out.println(coloredMessage);
+        System.out.printf("%s", coloredMessage);
         this.writeToTheLogFile(msg);
     }
 
@@ -100,7 +100,7 @@ public class Logger implements ILogger
 
                 if(this.writer != null)
                 {
-                    this.writer.println(toLog);
+                    this.writer.printf("%s", toLog);
                     this.writer.flush();
                 }
             } catch (IOException e)
@@ -124,7 +124,7 @@ public class Logger implements ILogger
         {
             final String toPrint = "\tat " + trace.toString();
             this.writeToTheLogFile(toPrint);
-            System.out.println(EnumLogColor.RED + toPrint + EnumLogColor.RESET);
+            System.out.printf("%s", EnumLogColor.RED + toPrint + EnumLogColor.RESET);
         }
     }
 
