@@ -1,8 +1,6 @@
 package fr.flowarg.flowlogger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,7 +10,7 @@ public class Logger implements ILogger
     private File logFile;
     private PrintWriter writer;
 
-    public Logger(String prefix, File logFile)
+    public Logger(String prefix, File logFile, boolean append)
     {
         this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
         this.logFile = logFile;
@@ -25,13 +23,20 @@ public class Logger implements ILogger
                     this.logFile.getParentFile().mkdirs();
                     this.logFile.createNewFile();
                 }
-                this.writer = new PrintWriter(this.logFile);
+                if(append)
+                    this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.logFile, true))));
+                else this.writer = new PrintWriter(this.logFile);
                 Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
             } catch (IOException e)
             {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Logger(String prefix, File logFile)
+    {
+        this(prefix, logFile, false);
     }
 
     public void message(boolean err, String toWrite)

@@ -12,6 +12,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 public final class ZipUtils
@@ -149,6 +150,52 @@ public final class ZipUtils
         bis.close();
     }
 
+    public static void unzip(String destinationDir, String zipPath) throws IOException
+    {
+        unzip(new File(destinationDir), new File(zipPath));
+    }
+
+    public static void unzip(File destinationDir, String zipPath) throws IOException
+    {
+        unzip(destinationDir, new File(zipPath));
+    }
+
+    public static void unzip(String destinationDir, File zipFile) throws IOException
+    {
+        unzip(new File(destinationDir), zipFile);
+    }
+
+    public static void unzip(File destinationDir, File zipFile) throws IOException
+    {
+        final ZipFile toUnZip = new ZipFile(zipFile);
+        final Enumeration<? extends ZipEntry> enu = toUnZip.entries();
+        while (enu.hasMoreElements())
+        {
+            final ZipEntry entry = enu.nextElement();
+            final File fl = new File(destinationDir + File.separator + entry.getName());
+
+            unzip0(fl, toUnZip, entry);
+        }
+
+        toUnZip.close();
+    }
+
+    private static void unzip0(File fl, ZipFile zipFile, ZipEntry entry) throws IOException
+    {
+        if (fl.getName().endsWith("/")) fl.mkdirs();
+        if(!fl.exists())
+            fl.getParentFile().mkdirs();
+        if(entry.isDirectory())
+            return;
+
+        final InputStream is = zipFile.getInputStream(entry);
+        final FileOutputStream fo = new FileOutputStream(fl);
+        while(is.available() > 0)
+            fo.write(is.read());
+        fo.close();
+        is.close();
+    }
+
     public static void unzipJar(String destinationDir, String jarPath, String... args) throws IOException
     {
         final File file = new File(jarPath);
@@ -160,20 +207,13 @@ public final class ZipUtils
             final File fl = new File(destinationDir + File.separator + je.getName());
 
             if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
-                if(fl.getAbsolutePath().contains("META-INF")) continue;
-            if (fl.getName().endsWith("/")) fl.mkdirs();
-            if(!fl.exists())
-                fl.getParentFile().mkdirs();
-            if(je.isDirectory())
-                continue;
+            {
+                if (fl.getAbsolutePath().contains("META-INF")) continue;
+            }
 
-            final InputStream is = jar.getInputStream(je);
-            final FileOutputStream fo = new FileOutputStream(fl);
-            while(is.available() > 0)
-                fo.write(is.read());
-            fo.close();
-            is.close();
+            unzip0(fl, jar, je);
         }
+
         jar.close();
     }
 
