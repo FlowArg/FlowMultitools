@@ -3,6 +3,7 @@ package fr.flowarg.flowcompat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class Platform
 {
@@ -52,7 +53,7 @@ public final class Platform
             else
 	    {
 	        en.getNames().forEach(s -> {
-                    if(OS.startWith(s))
+                    if(OS.contains(s))
                         result.set(en);
                 });
 	    }
