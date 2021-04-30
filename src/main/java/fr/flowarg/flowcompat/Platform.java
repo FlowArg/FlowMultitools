@@ -48,6 +48,10 @@ public final class Platform
         {
             if(en.getNames().contains(OS))
                 return en;
+            en.getNames().forEach(s -> {
+                if(OS.startWith(s))
+                    return en;
+            });
         }
         
         return null;
