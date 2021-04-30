@@ -46,12 +46,19 @@ public final class Platform
     {
         for(EnumOS en : EnumOS.values())
         {
+	    final AtomicReference<EnumOS> result = new AtomicReference<>(null);
             if(en.getNames().contains(OS))
-                return en;
-            en.getNames().forEach(s -> {
-                if(OS.startWith(s))
-                    return en;
-            });
+                result.set(en);
+            else
+	    {
+	        en.getNames().forEach(s -> {
+                    if(OS.startWith(s))
+                        result.set(en);
+                });
+	    }
+
+	    if(result.get() != null)
+	        return result.get();
         }
         
         return null;
