@@ -135,36 +135,48 @@ public final class FileUtils
         }
     }
 
+    /**
+     * @deprecated Deprecated since 1.2.7. Use {@link #getFileSizeMegaBytes(Path)} instead.
+     * Will be removed in a future release.
+     */
     @Deprecated
     public static long getFileSizeMegaBytes(File file)
     {
         return file.length() / (1024 * 1024);
     }
 
+    /**
+     * @deprecated Deprecated since 1.2.7. Use {@link #getFileSizeKiloBytes(Path)} instead.
+     * Will be removed in a future release.
+     */
     @Deprecated
     public static long getFileSizeKiloBytes(File file)
     {
         return  file.length() / 1024;
     }
 
+    /**
+     * @deprecated Deprecated since 1.2.7. Use {@link #getFileSizeBytes(Path)} instead.
+     * Will be removed in a future release.
+     */
     @Deprecated
     public static long getFileSizeBytes(File file)
     {
         return file.length();
     }
-    
-    public static long getFileSizeMegaBytes(Path path)
+
+    public static long getFileSizeMegaBytes(Path path) throws IOException
     {
         return getFileSizeBytes(path) / (1024 * 1024);
     }
 
-    public static long getFileSizeKiloBytes(Path path)
+    public static long getFileSizeKiloBytes(Path path) throws IOException
     {
         return getFileSizeBytes(path) / 1024;
     }
 
     
-    public static long getFileSizeBytes(Path path)
+    public static long getFileSizeBytes(Path path) throws IOException
     {
         return Files.size(path);
     }
