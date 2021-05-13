@@ -118,7 +118,7 @@ public class Logger implements ILogger
     @Override
     public void printStackTrace(Throwable cause)
     {
-        this.printStackTrace("An error as occurred : ", cause);
+        this.printStackTrace("An error occurred : ", cause);
     }
 
     @Override

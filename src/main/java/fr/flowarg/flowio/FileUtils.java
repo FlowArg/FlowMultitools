@@ -135,19 +135,38 @@ public final class FileUtils
         }
     }
 
+    @Deprecated
     public static long getFileSizeMegaBytes(File file)
     {
         return file.length() / (1024 * 1024);
     }
 
+    @Deprecated
     public static long getFileSizeKiloBytes(File file)
     {
         return  file.length() / 1024;
     }
 
+    @Deprecated
     public static long getFileSizeBytes(File file)
     {
         return file.length();
+    }
+    
+    public static long getFileSizeMegaBytes(Path path)
+    {
+        return getFileSizeBytes(path) / (1024 * 1024);
+    }
+
+    public static long getFileSizeKiloBytes(Path path)
+    {
+        return getFileSizeBytes(path) / 1024;
+    }
+
+    
+    public static long getFileSizeBytes(Path path)
+    {
+        return Files.size(path);
     }
 
     public static String getStringPathOfClass(Class<?> classToGetPath)
