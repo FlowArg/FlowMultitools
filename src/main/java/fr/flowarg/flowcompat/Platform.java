@@ -51,12 +51,12 @@ public final class Platform
             if(en.getNames().contains(OS))
                 result.set(en);
             else
-	    {
-	        en.getNames().forEach(s -> {
+            {
+	            en.getNames().forEach(s -> {
                     if(OS.contains(s))
                         result.set(en);
                 });
-	    }
+	        }
 
 	    if(result.get() != null)
 	        return result.get();

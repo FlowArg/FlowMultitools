@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.2.7'
+version '1.3.0'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
@@ -89,9 +89,10 @@ signing {
 }
 
 repositories {
+    mavenCentral()
     mavenLocal()
 }
 
 dependencies {
-    api 'org.codehaus.plexus:plexus-archiver:2.2'
+    api 'org.apache.commons:commons-compress:1.20'
 }

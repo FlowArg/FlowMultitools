@@ -1,6 +1,7 @@
 package fr.flowarg.flowstringer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public final class StringUtils
 {
@@ -37,5 +38,12 @@ public final class StringUtils
     public static boolean checkString(String str)
     {
         return str != null && !str.trim().equals("");
+    }
+
+    public static String toString(List<String> stringList)
+    {
+        final StringBuilder sb = new StringBuilder();
+        stringList.forEach(sb::append);
+        return sb.toString();
     }
 }

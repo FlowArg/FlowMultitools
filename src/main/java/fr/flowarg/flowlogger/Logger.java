@@ -1,15 +1,21 @@
 package fr.flowarg.flowlogger;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Logger implements ILogger
 {
     private final String prefix;
+    @Deprecated
     private File logFile;
+    private Path logPath;
     private PrintWriter writer;
 
+    @Deprecated
     public Logger(String prefix, File logFile, boolean append)
     {
         this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
@@ -34,7 +40,37 @@ public class Logger implements ILogger
         }
     }
 
+    @Deprecated
     public Logger(String prefix, File logFile)
+    {
+        this(prefix, logFile, false);
+    }
+
+    public Logger(String prefix, Path logPath, boolean append)
+    {
+        this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
+        this.logPath = logPath;
+        if(this.logPath != null)
+        {
+            try
+            {
+                if(Files.notExists(this.logPath))
+                {
+                    Files.createDirectories(this.logPath.getParent());
+                    Files.createFile(this.logPath);
+                }
+                if(append)
+                    this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(this.logPath, StandardOpenOption.APPEND))));
+                else this.writer = new PrintWriter(Files.newOutputStream(this.logPath));
+                Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
+            } catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public Logger(String prefix, Path logFile)
     {
         this(prefix, logFile, false);
     }
@@ -93,7 +129,27 @@ public class Logger implements ILogger
     @Override
     public void writeToTheLogFile(String toLog)
     {
-        if(this.logFile != null)
+        if(this.logPath != null)
+        {
+            try
+            {
+                if(Files.notExists(this.logPath))
+                {
+                    Files.createDirectories(this.logPath.getParent());
+                    Files.createFile(this.logPath);
+                }
+
+                if(this.writer != null)
+                {
+                    this.writer.printf("%s\n", toLog);
+                    this.writer.flush();
+                }
+            } catch (IOException e)
+            {
+                this.printStackTrace(e);
+            }
+        }
+        else if(this.logFile != null)
         {
             try
             {
@@ -138,7 +194,8 @@ public class Logger implements ILogger
     {
         this.writer.close();
     }
-    
+
+    @Deprecated
     @Override
     public File getLogFile()
     {
@@ -146,9 +203,22 @@ public class Logger implements ILogger
     }
 
     @Override
+    public Path getLogPath()
+    {
+        return this.logPath;
+    }
+
+    @Deprecated
+    @Override
     public void setLogFile(File logFile)
     {
         this.logFile = logFile;
+    }
+
+    @Override
+    public void setLogPath(Path logPath)
+    {
+        this.logPath = logPath;
     }
 
     @Override
