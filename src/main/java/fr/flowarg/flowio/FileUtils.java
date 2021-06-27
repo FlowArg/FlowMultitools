@@ -197,7 +197,7 @@ public final class FileUtils
     {
         for (String s : dirsToCreate)
         {
-            final Path path = Paths.get(location + s);
+            final Path path = Paths.get(location, s);
 
             if (Files.notExists(path)) Files.createDirectory(path);
         }

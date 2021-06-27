@@ -179,7 +179,7 @@ public final class ZipUtils
             for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
             {
                 final JarEntry entry = enums.nextElement();
-                final Path file = Paths.get(destinationDir.toString(), entry.getName());
+                final Path file = destinationDir.resolve(entry.getName());
 
                 if (file.getFileName().toString().endsWith("/")) Files.createDirectories(file);
             }
@@ -188,7 +188,7 @@ public final class ZipUtils
             {
                 final JarEntry entry = enums.nextElement();
 
-                final Path path = Paths.get(destinationDir.toString(), entry.getName());
+                final Path path = destinationDir.resolve(entry.getName());
                 final String fileName = path.getFileName().toString();
 
                 if (!fileName.endsWith("/"))
@@ -420,9 +420,7 @@ public final class ZipUtils
             while (enu.hasMoreElements())
             {
                 final ZipEntry entry = enu.nextElement();
-                final Path fl = Paths.get(destinationDir.toString(), entry.getName());
-
-                unzip0(fl, toUnZip, entry);
+                unzip0(destinationDir.resolve(entry.getName()), toUnZip, entry);
             }
         }
     }
@@ -495,7 +493,7 @@ public final class ZipUtils
             while(enu.hasMoreElements())
             {
                 final JarEntry je = enu.nextElement();
-                final Path fl = Paths.get(destinationDir.toString(), je.getName());
+                final Path fl = destinationDir.resolve(je.getName());
 
                 if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
                 {
