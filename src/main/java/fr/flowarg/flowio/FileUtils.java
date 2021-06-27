@@ -10,7 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
@@ -184,7 +183,7 @@ public final class FileUtils
     public static List<Path> listRecursive(final Path directory) throws IOException
     {
         final List<Path> files = new ArrayList<>();
-        final List<Path> fs = list(directory).collect(Collectors.toList());
+        final List<Path> fs = list(directory);
 
         for (final Path f : fs)
         {
@@ -260,9 +259,15 @@ public final class FileUtils
         return classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath();
     }
 
+    @Deprecated
     public static File getFilePathOfClass(Class<?> classToGetPath)
     {
         return new File(classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath());
+    }
+
+    public static Path getPathOfClass(Class<?> classToGetPath)
+    {
+        return Paths.get(classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath());
     }
 
     public static String hashInput(InputStream input, String method) throws NoSuchAlgorithmException, IOException
@@ -374,9 +379,9 @@ public final class FileUtils
      * @return the list of all files in this directory.
      * @throws IOException if an I/O error occurred.
      */
-    public static Stream<Path> list(final Path dir) throws IOException
+    public static List<Path> list(final Path dir) throws IOException
     {
-        return Files.exists(dir) ? Files.list(dir) : Stream.empty();
+        return Files.exists(dir) ? Files.list(dir).collect(Collectors.toList()) : new ArrayList<>();
     }
 
     /**

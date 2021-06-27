@@ -1,13 +1,14 @@
 package fr.flowarg.flowcompat;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class Platform
 {
-    public static final String OS = System.getProperty("os.name").toLowerCase();
+    public static final String OS = System.getProperty("os.name", "").toLowerCase();
 
     public static void exit(int exitCode, boolean halt)
     {
@@ -72,9 +73,9 @@ public final class Platform
 
     public enum EnumOS
     {
-        MAC(Arrays.asList("mac", "osx", "macos", "darwin")),
-        WINDOWS(Arrays.asList("windows", "win")),
-        LINUX(Arrays.asList("linux", "unix"));
+        MAC(Collections.unmodifiableList(Arrays.asList("mac", "osx", "macos", "darwin"))),
+        WINDOWS(Collections.unmodifiableList(Arrays.asList("windows", "win"))),
+        LINUX(Collections.unmodifiableList(Arrays.asList("linux", "unix")));
 
         private final List<String> names;
 

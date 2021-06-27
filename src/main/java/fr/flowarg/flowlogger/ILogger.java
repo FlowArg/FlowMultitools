@@ -1,6 +1,5 @@
 package fr.flowarg.flowlogger;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public interface ILogger
@@ -12,11 +11,7 @@ public interface ILogger
     void infoColor(EnumLogColor color, String message);
     void printStackTrace(String errorName, Throwable cause);
     void printStackTrace(Throwable cause);
-    @Deprecated
-    File getLogFile();
     Path getLogPath();
-    @Deprecated
-    void setLogFile(File logFile);
     void setLogPath(Path logPath);
     String getPrefix();
     

@@ -101,16 +101,16 @@ public final class ZipUtils
 
         if(baseFile != null && newFile != null)
         {
-            final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(Files.newOutputStream(newFile));
-            final BufferedInputStream fileInputStream = new BufferedInputStream(Files.newInputStream(baseFile));
-            int bytesRead;
+            try(final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(Files.newOutputStream(newFile));
+                final BufferedInputStream fileInputStream = new BufferedInputStream(Files.newInputStream(baseFile)))
+            {
+                int bytesRead;
 
-            while ((bytesRead = fileInputStream.read(buffer)) > 0)
-                gzipOutputStream.write(buffer, 0, bytesRead);
+                while ((bytesRead = fileInputStream.read(buffer)) > 0)
+                    gzipOutputStream.write(buffer, 0, bytesRead);
 
-            fileInputStream.close();
-            gzipOutputStream.finish();
-            gzipOutputStream.close();
+                gzipOutputStream.finish();
+            }
         }
     }
 
@@ -124,50 +124,46 @@ public final class ZipUtils
     @Deprecated
     public static void unzipJarWithLZMACompat(final File destinationDir, final File jarFile) throws IOException
     {
-        final JarFile jar = new JarFile(jarFile);
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
+        try(final JarFile jar = new JarFile(jarFile))
         {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File file = new File(fileName);
-
-            if (fileName.endsWith("/")) file.mkdirs();
-        }
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File file = new File(fileName);
-
-            if (!fileName.endsWith("/"))
+            for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
             {
-                if (fileName.endsWith(".lzma"))
-                {
-                    new File(destinationDir, "data").mkdir();
-                    final InputStream stream = jar.getInputStream(entry);
-                    Files.copy(stream, new File(destinationDir, entry.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    stream.close();
-                }
-                else
-                {
-                    final InputStream is = jar.getInputStream(entry);
-                    final FileOutputStream fos = new FileOutputStream(file);
+                final JarEntry entry = enums.nextElement();
 
-                    while (is.available() > 0)
-                        fos.write(is.read());
+                final String fileName = destinationDir + File.separator + entry.getName();
+                final File file = new File(fileName);
 
-                    fos.close();
-                    is.close();
+                if (fileName.endsWith("/")) file.mkdirs();
+            }
+
+            for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
+            {
+                final JarEntry entry = enums.nextElement();
+
+                final String fileName = destinationDir + File.separator + entry.getName();
+                final File file = new File(fileName);
+
+                if (!fileName.endsWith("/"))
+                {
+                    if (fileName.endsWith(".lzma"))
+                    {
+                        new File(destinationDir, "data").mkdir();
+                        try(final InputStream stream = jar.getInputStream(entry))
+                        {
+                            Files.copy(stream, new File(destinationDir, entry.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                        }
+                    }
+                    else
+                    {
+                        try(final InputStream is = jar.getInputStream(entry);final FileOutputStream fos = new FileOutputStream(file))
+                        {
+                            while (is.available() > 0)
+                                fos.write(is.read());
+                        }
+                    }
                 }
-                jar.getInputStream(entry).close();
             }
         }
-
-        jar.close();
     }
 
     /**
@@ -178,48 +174,44 @@ public final class ZipUtils
      */
     public static void unzipJarWithLZMACompat(final Path destinationDir, final Path jarFile) throws IOException
     {
-        final JarFile jar = new JarFile(jarFile.toFile());
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
+        try(final JarFile jar = new JarFile(jarFile.toFile()))
         {
-            final JarEntry entry = enums.nextElement();
-            final Path file = Paths.get(destinationDir.toString(), entry.getName());
-
-            if (file.getFileName().toString().endsWith("/")) Files.createDirectories(file);
-        }
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final Path path = Paths.get(destinationDir.toString(), entry.getName());
-            final String fileName = path.getFileName().toString();
-
-            if (!fileName.endsWith("/"))
+            for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
             {
-                if (fileName.endsWith(".lzma"))
-                {
-                    Files.createDirectory(Paths.get(destinationDir.toString(), "data"));
-                    final InputStream stream = jar.getInputStream(entry);
-                    Files.copy(stream, Paths.get(destinationDir.toString(), entry.getName()), StandardCopyOption.REPLACE_EXISTING);
-                    stream.close();
-                }
-                else
-                {
-                    final InputStream is = jar.getInputStream(entry);
-                    final OutputStream fos = Files.newOutputStream(path);
+                final JarEntry entry = enums.nextElement();
+                final Path file = Paths.get(destinationDir.toString(), entry.getName());
 
-                    while (is.available() > 0)
-                        fos.write(is.read());
+                if (file.getFileName().toString().endsWith("/")) Files.createDirectories(file);
+            }
 
-                    fos.close();
-                    is.close();
+            for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
+            {
+                final JarEntry entry = enums.nextElement();
+
+                final Path path = Paths.get(destinationDir.toString(), entry.getName());
+                final String fileName = path.getFileName().toString();
+
+                if (!fileName.endsWith("/"))
+                {
+                    if (fileName.endsWith(".lzma"))
+                    {
+                        Files.createDirectory(Paths.get(destinationDir.toString(), "data"));
+                        try(final InputStream stream = jar.getInputStream(entry))
+                        {
+                            Files.copy(stream, Paths.get(destinationDir.toString(), entry.getName()), StandardCopyOption.REPLACE_EXISTING);
+                        }
+                    }
+                    else
+                    {
+                        try(final InputStream is = jar.getInputStream(entry);final OutputStream fos = Files.newOutputStream(path))
+                        {
+                            while (is.available() > 0)
+                                fos.write(is.read());
+                        }
+                    }
                 }
-                jar.getInputStream(entry).close();
             }
         }
-
-        jar.close();
     }
 
     /**
@@ -232,16 +224,16 @@ public final class ZipUtils
     @Deprecated
     public static void compressFiles(File[] listFiles, File destZipFile) throws IOException
     {
-        final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destZipFile));
-
-        for (File file : listFiles)
+        try(final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destZipFile)))
         {
-            if (file.isDirectory()) addFolderToZip(file, file.getName(), zos);
-            else addFileToZip(file, zos);
-        }
+            for (File file : listFiles)
+            {
+                if (file.isDirectory()) addFolderToZip(file, file.getName(), zos);
+                else addFileToZip(file, zos);
+            }
 
-        zos.flush();
-        zos.close();
+            zos.flush();
+        }
     }
 
     /**
@@ -252,16 +244,16 @@ public final class ZipUtils
      */
     public static void compressFiles(Path[] listFiles, Path destZipFile) throws IOException
     {
-        final ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(destZipFile));
-
-        for (Path file : listFiles)
+        try(final ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(destZipFile)))
         {
-            if (Files.isDirectory(file)) addFolderToZip(file, file.getFileName().toString(), zos);
-            else addFileToZip(file, zos);
-        }
+            for (Path file : listFiles)
+            {
+                if (Files.isDirectory(file)) addFolderToZip(file, file.getFileName().toString(), zos);
+                else addFileToZip(file, zos);
+            }
 
-        zos.flush();
-        zos.close();
+            zos.flush();
+        }
     }
 
     @Deprecated
@@ -276,15 +268,16 @@ public final class ZipUtils
             }
             zos.putNextEntry(new ZipEntry(parentFolder + "/" + file.getName()));
 
-            final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-            final byte[] buffer = new byte[4096];
-            int read;
+            try(final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file)))
+            {
+                final byte[] buffer = new byte[4096];
+                int read;
 
-            while ((read = bis.read(buffer)) != -1)
-                zos.write(buffer, 0, read);
+                while ((read = bis.read(buffer)) != -1)
+                    zos.write(buffer, 0, read);
 
-            zos.closeEntry();
-            bis.close();
+                zos.closeEntry();
+            }
         }
     }
 
@@ -300,15 +293,16 @@ public final class ZipUtils
                 }
                 zos.putNextEntry(new ZipEntry(parentFolder + "/" + path.getFileName().toString()));
 
-                final BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(path));
-                final byte[] buffer = new byte[4096];
-                int read;
+                try(final BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(path)))
+                {
+                    final byte[] buffer = new byte[4096];
+                    int read;
 
-                while ((read = bis.read(buffer)) != -1)
-                    zos.write(buffer, 0, read);
+                    while ((read = bis.read(buffer)) != -1)
+                        zos.write(buffer, 0, read);
 
-                zos.closeEntry();
-                bis.close();
+                    zos.closeEntry();
+                }
             } catch (IOException e)
             {
                 err.set(e);
@@ -322,32 +316,32 @@ public final class ZipUtils
     {
         zos.putNextEntry(new ZipEntry(file.getName()));
 
-        final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+        try(final BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file)))
+        {
+            int read;
+            final byte[] buffer = new byte[4096];
 
-        int read;
-        final byte[] buffer = new byte[4096];
+            while ((read = bis.read(buffer)) != -1)
+                zos.write(buffer, 0, read);
 
-        while ((read = bis.read(buffer)) != -1)
-            zos.write(buffer, 0, read);
-
-        zos.closeEntry();
-        bis.close();
+            zos.closeEntry();
+        }
     }
 
     private static void addFileToZip(Path file, ZipOutputStream zos) throws IOException
     {
         zos.putNextEntry(new ZipEntry(file.getFileName().toString()));
 
-        final BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(file));
+        try(final BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(file)))
+        {
+            int read;
+            final byte[] buffer = new byte[4096];
 
-        int read;
-        final byte[] buffer = new byte[4096];
+            while ((read = bis.read(buffer)) != -1)
+                zos.write(buffer, 0, read);
 
-        while ((read = bis.read(buffer)) != -1)
-            zos.write(buffer, 0, read);
-
-        zos.closeEntry();
-        bis.close();
+            zos.closeEntry();
+        }
     }
 
     /**
@@ -399,17 +393,17 @@ public final class ZipUtils
     @Deprecated
     public static void unzip(File destinationDir, File zipFile) throws IOException
     {
-        final ZipFile toUnZip = new ZipFile(zipFile);
-        final Enumeration<? extends ZipEntry> enu = toUnZip.entries();
-        while (enu.hasMoreElements())
+        try(final ZipFile toUnZip = new ZipFile(zipFile))
         {
-            final ZipEntry entry = enu.nextElement();
-            final File fl = new File(destinationDir + File.separator + entry.getName());
+            final Enumeration<? extends ZipEntry> enu = toUnZip.entries();
+            while (enu.hasMoreElements())
+            {
+                final ZipEntry entry = enu.nextElement();
+                final File fl = new File(destinationDir + File.separator + entry.getName());
 
-            unzip0(fl, toUnZip, entry);
+                unzip0(fl, toUnZip, entry);
+            }
         }
-
-        toUnZip.close();
     }
 
     /**
@@ -420,17 +414,17 @@ public final class ZipUtils
      */
     public static void unzip(Path destinationDir, Path zipFile) throws IOException
     {
-        final ZipFile toUnZip = new ZipFile(zipFile.toFile());
-        final Enumeration<? extends ZipEntry> enu = toUnZip.entries();
-        while (enu.hasMoreElements())
+        try(final ZipFile toUnZip = new ZipFile(zipFile.toFile()))
         {
-            final ZipEntry entry = enu.nextElement();
-            final Path fl = Paths.get(destinationDir.toString(), entry.getName());
+            final Enumeration<? extends ZipEntry> enu = toUnZip.entries();
+            while (enu.hasMoreElements())
+            {
+                final ZipEntry entry = enu.nextElement();
+                final Path fl = Paths.get(destinationDir.toString(), entry.getName());
 
-            unzip0(fl, toUnZip, entry);
+                unzip0(fl, toUnZip, entry);
+            }
         }
-
-        toUnZip.close();
     }
 
     @Deprecated
@@ -442,12 +436,11 @@ public final class ZipUtils
         if(entry.isDirectory())
             return;
 
-        final InputStream is = zipFile.getInputStream(entry);
-        final FileOutputStream fo = new FileOutputStream(fl);
-        while(is.available() > 0)
-            fo.write(is.read());
-        fo.close();
-        is.close();
+        try(final InputStream is = zipFile.getInputStream(entry);final FileOutputStream fo = new FileOutputStream(fl))
+        {
+            while(is.available() > 0)
+                fo.write(is.read());
+        }
     }
 
     private static void unzip0(Path fl, ZipFile zipFile, ZipEntry entry) throws IOException
@@ -458,32 +451,60 @@ public final class ZipUtils
         if(entry.isDirectory())
             return;
 
-        final BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));
-        final BufferedOutputStream fo = new BufferedOutputStream(Files.newOutputStream(fl));
-        while(is.available() > 0)
-            fo.write(is.read());
-        fo.close();
-        is.close();
+        try(final BufferedInputStream is = new BufferedInputStream(zipFile.getInputStream(entry));final BufferedOutputStream fo = new BufferedOutputStream(Files.newOutputStream(fl)))
+        {
+            while(is.available() > 0)
+                fo.write(is.read());
+        }
     }
 
+    /**
+     * This method unzips a jar into a specified directory.
+     * @param destinationDir destination folder.
+     * @param jarPath the jar to extract.
+     * @param args "ignoreMetaInf" option will not extract META-INF files.
+     * @throws IOException if an I/O error occurred.
+     * @deprecated use {@link #unzipJar(Path, Path, String...)}
+     */
+    @Deprecated
     public static void unzipJar(String destinationDir, String jarPath, String... args) throws IOException
     {
-        final JarFile jar = new JarFile(Paths.get(jarPath).toFile());
-        final Enumeration<JarEntry> enu = jar.entries();
-        while(enu.hasMoreElements())
+        try(final JarFile jar = new JarFile(Paths.get(jarPath).toFile()))
         {
-            final JarEntry je = enu.nextElement();
-            final Path fl = Paths.get(destinationDir, je.getName());
-
-            if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
+            final Enumeration<JarEntry> enu = jar.entries();
+            while(enu.hasMoreElements())
             {
-                if (fl.toString().contains("META-INF")) continue;
+                final JarEntry je = enu.nextElement();
+                final Path fl = Paths.get(destinationDir, je.getName());
+
+                if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
+                {
+                    if (fl.toString().contains("META-INF")) continue;
+                }
+
+                unzip0(fl, jar, je);
             }
-
-            unzip0(fl, jar, je);
         }
+    }
 
-        jar.close();
+    public static void unzipJar(Path destinationDir, Path jarPath, String... args) throws IOException
+    {
+        try(final JarFile jar = new JarFile(jarPath.toFile()))
+        {
+            final Enumeration<JarEntry> enu = jar.entries();
+            while(enu.hasMoreElements())
+            {
+                final JarEntry je = enu.nextElement();
+                final Path fl = Paths.get(destinationDir.toString(), je.getName());
+
+                if(args.length >= 1 && args[0] != null && args[0].equals("ignoreMetaInf"))
+                {
+                    if (fl.toString().contains("META-INF")) continue;
+                }
+
+                unzip0(fl, jar, je);
+            }
+        }
     }
 
     public static void unzipJars(JarPath... jars) throws IOException
@@ -496,21 +517,21 @@ public final class ZipUtils
     {
         private static final long serialVersionUID = 1L;
 
-        private final String destination;
-        private final String jarPath;
+        private final Path destination;
+        private final Path jarPath;
 
-        public JarPath(String destination, String jarPath)
+        public JarPath(Path destination, Path jarPath)
         {
             this.destination = destination;
             this.jarPath = jarPath;
         }
 
-        public String getDestination()
+        public Path getDestination()
         {
             return destination;
         }
 
-        public String getJarPath()
+        public Path getJarPath()
         {
             return jarPath;
         }

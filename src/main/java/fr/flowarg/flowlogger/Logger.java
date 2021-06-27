@@ -1,6 +1,7 @@
 package fr.flowarg.flowlogger;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -10,34 +11,13 @@ import java.util.Date;
 public class Logger implements ILogger
 {
     private final String prefix;
-    @Deprecated
-    private File logFile;
     private Path logPath;
     private PrintWriter writer;
 
     @Deprecated
     public Logger(String prefix, File logFile, boolean append)
     {
-        this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
-        this.logFile = logFile;
-        if(this.logFile != null)
-        {
-            try
-            {
-                if(!this.logFile.exists())
-                {
-                    this.logFile.getParentFile().mkdirs();
-                    this.logFile.createNewFile();
-                }
-                if(append)
-                    this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(this.logFile, true))));
-                else this.writer = new PrintWriter(this.logFile);
-                Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
-            } catch (IOException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
+        this(prefix, logFile.toPath(), append);
     }
 
     @Deprecated
@@ -60,8 +40,8 @@ public class Logger implements ILogger
                     Files.createFile(this.logPath);
                 }
                 if(append)
-                    this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(this.logPath, StandardOpenOption.APPEND))));
-                else this.writer = new PrintWriter(Files.newOutputStream(this.logPath));
+                    this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(this.logPath, StandardOpenOption.APPEND), StandardCharsets.UTF_8)));
+                else this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(this.logPath), StandardCharsets.UTF_8)));
                 Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
             } catch (IOException e)
             {
@@ -78,9 +58,9 @@ public class Logger implements ILogger
     public void message(boolean err, String toWrite)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + (err ? "[ERROR]: " : "[INFO]: ") + toWrite;
-        if (err) System.out.printf("%s\n", EnumLogColor.RED + msg + EnumLogColor.RESET);
-        else System.out.printf("%s\n", msg);
+        final String msg = date + this.prefix + (err ? "[ERROR]: " : "[INFO]: ") + toWrite;
+        if (err) System.out.println(EnumLogColor.RED + msg + EnumLogColor.RESET);
+        else System.out.println(msg);
         this.writeToTheLogFile(msg);
     }
 
@@ -88,9 +68,9 @@ public class Logger implements ILogger
     public void infoColor(EnumLogColor color, String toWrite)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + "[INFO]: " + toWrite;
+        final String msg = date + this.prefix + "[INFO]: " + toWrite;
         final String coloredMessage = color + msg + EnumLogColor.RESET;
-        System.out.printf("%s\n", coloredMessage);
+        System.out.println(coloredMessage);
         this.writeToTheLogFile(msg);
     }
 
@@ -110,9 +90,9 @@ public class Logger implements ILogger
     public void warn(String message)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + "[WARN]: " + message;
+        final String msg = date + this.prefix + "[WARN]: " + message;
         final String coloredWarn = EnumLogColor.YELLOW + msg + EnumLogColor.RESET;
-        System.out.printf("%s\n", coloredWarn);
+        System.out.println(coloredWarn);
         this.writeToTheLogFile(msg);
     }
     
@@ -120,9 +100,9 @@ public class Logger implements ILogger
     public void debug(String message)
     {
         final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
-        final String msg = date + prefix + "[DEBUG]: " + message;
+        final String msg = date + this.prefix + "[DEBUG]: " + message;
         final String coloredMessage = EnumLogColor.CYAN + msg + EnumLogColor.RESET;
-        System.out.printf("%s\n", coloredMessage);
+        System.out.println(coloredMessage);
         this.writeToTheLogFile(msg);
     }
 
@@ -141,27 +121,7 @@ public class Logger implements ILogger
 
                 if(this.writer != null)
                 {
-                    this.writer.printf("%s\n", toLog);
-                    this.writer.flush();
-                }
-            } catch (IOException e)
-            {
-                this.printStackTrace(e);
-            }
-        }
-        else if(this.logFile != null)
-        {
-            try
-            {
-                if(!this.logFile.exists())
-                {
-                    this.logFile.getParentFile().mkdirs();
-                    this.logFile.createNewFile();
-                }
-
-                if(this.writer != null)
-                {
-                    this.writer.printf("%s\n", toLog);
+                    this.writer.println(toLog);
                     this.writer.flush();
                 }
             } catch (IOException e)
@@ -185,7 +145,7 @@ public class Logger implements ILogger
         {
             final String toPrint = "\tat " + trace.toString();
             this.writeToTheLogFile(toPrint);
-            System.out.printf("%s\n", EnumLogColor.RED + toPrint + EnumLogColor.RESET);
+            System.out.println(EnumLogColor.RED + toPrint + EnumLogColor.RESET);
         }
     }
 
@@ -195,24 +155,10 @@ public class Logger implements ILogger
         this.writer.close();
     }
 
-    @Deprecated
-    @Override
-    public File getLogFile()
-    {
-        return this.logFile;
-    }
-
     @Override
     public Path getLogPath()
     {
         return this.logPath;
-    }
-
-    @Deprecated
-    @Override
-    public void setLogFile(File logFile)
-    {
-        this.logFile = logFile;
     }
 
     @Override
