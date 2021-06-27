@@ -1,11 +1,5 @@
 package fr.flowarg.flowcompat;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 public final class Platform
 {
     public static final String OS = System.getProperty("os.name", "").toLowerCase();
@@ -16,51 +10,46 @@ public final class Platform
         else System.exit(exitCode);
     }
 
+    public static boolean isOn(EnumOS platform)
+    {
+        for (String alias : platform.getNames())
+        {
+            if (OS.contains(alias))
+                return true;
+        }
+        return false;
+    }
+
     public static boolean isOnMac()
     {
-        final AtomicBoolean bool = new AtomicBoolean(false);
-        EnumOS.MAC.getNames().forEach(alias ->
-        {
-            if (OS.contains(alias)) bool.set(true);
-        });
-        return bool.get();
+        return isOn(EnumOS.MAC);
     }
 
     public static boolean isOnWindows()
     {
-        final AtomicBoolean bool = new AtomicBoolean(false);
-        EnumOS.WINDOWS.getNames().forEach(alias -> {
-            if (OS.contains(alias)) bool.set(true);
-        });
-        return bool.get();
+        return isOn(EnumOS.WINDOWS);
     }
 
     public static boolean isOnLinux()
     {
-        final AtomicBoolean bool = new AtomicBoolean(false);
-        EnumOS.LINUX.getNames().forEach(alias -> {
-            if (OS.contains(alias)) bool.set(true);
-        });
-        return bool.get();
+        return isOn(EnumOS.LINUX);
     }
     
     public static EnumOS getCurrentPlatform()
     {
         for(EnumOS en : EnumOS.values())
         {
-	    final AtomicReference<EnumOS> result = new AtomicReference<>(null);
-            if(en.getNames().contains(OS))
-                result.set(en);
-            else
+	        for (int i = 0; i < en.getNames().length; i++)
             {
-	            en.getNames().forEach(s -> {
-                    if(OS.contains(s))
-                        result.set(en);
-                });
-	        }
+                if(en.getNames()[i].equalsIgnoreCase(OS))
+                    return en;
+            }
 
-	    if(result.get() != null)
-	        return result.get();
+	        for (String s : en.getNames())
+	        {
+	            if(OS.contains(s))
+	                return en;
+	        }
         }
         
         return null;
@@ -73,18 +62,18 @@ public final class Platform
 
     public enum EnumOS
     {
-        MAC(Collections.unmodifiableList(Arrays.asList("mac", "osx", "macos", "darwin"))),
-        WINDOWS(Collections.unmodifiableList(Arrays.asList("windows", "win"))),
-        LINUX(Collections.unmodifiableList(Arrays.asList("linux", "unix")));
+        MAC(new String[]{"mac", "osx", "macos", "darwin"}),
+        WINDOWS(new String[]{"windows", "win"}),
+        LINUX(new String[]{"linux", "unix"});
 
-        private final List<String> names;
+        private final String[] names;
 
-        EnumOS(List<String> names)
+        EnumOS(String[] names)
         {
             this.names = names;
         }
 
-        public List<String> getNames()
+        public String[] getNames()
         {
             return this.names;
         }
