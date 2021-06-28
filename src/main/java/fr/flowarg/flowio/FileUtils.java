@@ -105,9 +105,12 @@ public final class FileUtils
     {
         if (Files.exists(folder) && Files.isDirectory(folder))
         {
-            final List<Path> files = listRecursive(folder);
+            final List<Path> files = list(folder);
             for (final Path f : files)
-                Files.delete(f);
+            {
+                if(Files.isDirectory(f)) deleteDirectory(f);
+                else Files.delete(f);
+            }
 
             Files.delete(folder);
         }
