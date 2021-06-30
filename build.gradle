@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.3.2'
+version '1.3.3'
 archivesBaseName = 'flowmultitools'
 
 compileJava {

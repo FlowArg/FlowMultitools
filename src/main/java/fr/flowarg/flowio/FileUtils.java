@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
@@ -384,7 +385,14 @@ public final class FileUtils
      */
     public static List<Path> list(final Path dir) throws IOException
     {
-        return Files.exists(dir) ? Files.list(dir).collect(Collectors.toList()) : new ArrayList<>();
+        final List<Path> result = new ArrayList<>();
+        if(Files.exists(dir))
+        {
+            final Stream<Path> files = Files.list(dir);
+            result.addAll(files.collect(Collectors.toList()));
+            files.close();
+        }
+        return result;
     }
 
     /**
