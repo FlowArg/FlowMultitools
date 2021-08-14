@@ -62,13 +62,13 @@ public final class Platform
 
     public enum EnumOS
     {
-        MAC(new String[]{"mac", "osx", "macos", "darwin"}),
-        WINDOWS(new String[]{"windows", "win"}),
-        LINUX(new String[]{"linux", "unix"});
+        MAC("mac", "osx", "macos", "darwin"),
+        WINDOWS("windows", "win"),
+        LINUX("linux", "unix");
 
         private final String[] names;
 
-        EnumOS(String[] names)
+        EnumOS(String... names)
         {
             this.names = names;
         }

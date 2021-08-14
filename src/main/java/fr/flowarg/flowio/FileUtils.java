@@ -82,24 +82,6 @@ public final class FileUtils
     /**
      * Delete the given directory
      * @param folder folder to delete.
-     * @deprecated use {@link #deleteDirectory(Path)} instead.
-     */
-    @Deprecated
-    public static void deleteDirectory(final File folder)
-    {
-        if (folder.exists() && folder.isDirectory())
-        {
-            final List<File> files = listRecursive(folder);
-            for (final File f : files)
-                f.delete();
-            
-            folder.delete();
-        }
-    }
-
-    /**
-     * Delete the given directory
-     * @param folder folder to delete.
      * @throws IOException if an I/O error occurred.
      */
     public static void deleteDirectory(final Path folder) throws IOException
@@ -115,27 +97,6 @@ public final class FileUtils
 
             Files.delete(folder);
         }
-    }
-
-    /**
-     * Delete the file if it isn't in excluded files.
-     * @param toDelete the file to delete.
-     * @param excludes whitelist
-     * @deprecated use {@link #deleteExclude(Path, Path...)} instead.
-     */
-    @Deprecated
-    public static void deleteExclude(File toDelete, File... excludes)
-    {
-        boolean flag = true;
-        for (File exclude : excludes)
-        {
-            if(exclude.getAbsolutePath().equals(toDelete.getAbsolutePath()))
-            {
-                flag = false;
-                break;
-            }
-        }
-        if(flag) toDelete.delete();
     }
 
     /**
@@ -388,9 +349,10 @@ public final class FileUtils
         final List<Path> result = new ArrayList<>();
         if(Files.exists(dir))
         {
-            final Stream<Path> files = Files.list(dir);
-            result.addAll(files.collect(Collectors.toList()));
-            files.close();
+            try(final Stream<Path> files = Files.list(dir))
+            {
+                result.addAll(files.collect(Collectors.toList()));
+            }
         }
         return result;
     }
