@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":41,"i2":9,"i3":41,"i4":9,"i5":41,"i6":9,"i7":41,"i8":9,"i9":41,"i10":41,"i11":9,"i12":41,"i13":9,"i14":41,"i15":9,"i16":9,"i17":41,"i18":9,"i19":41,"i20":9,"i21":9,"i22":9,"i23":41,"i24":9,"i25":41,"i26":9,"i27":41,"i28":9,"i29":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":41,"i4":9,"i5":41,"i6":9,"i7":41,"i8":41,"i9":9,"i10":41,"i11":9,"i12":41,"i13":9,"i14":9,"i15":41,"i16":9,"i17":41,"i18":9,"i19":9,"i20":9,"i21":41,"i22":9,"i23":41,"i24":9,"i25":41,"i26":9,"i27":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -151,35 +151,18 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#deleteDirectory-java.io.File-">deleteDirectory</a></span>(java.io.File&nbsp;folder)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../fr/flowarg/flowio/FileUtils.html#deleteDirectory-java.nio.file.Path-"><code>deleteDirectory(Path)</code></a> instead.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#deleteDirectory-java.nio.file.Path-">deleteDirectory</a></span>(java.nio.file.Path&nbsp;folder)</code>
 <div class="block">Delete the given directory</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>static void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#deleteExclude-java.io.File-java.io.File...-">deleteExclude</a></span>(java.io.File&nbsp;toDelete,
-             java.io.File...&nbsp;excludes)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
-<div class="block"><span class="deprecationComment">use <a href="../../../fr/flowarg/flowio/FileUtils.html#deleteExclude-java.nio.file.Path-java.nio.file.Path...-"><code>deleteExclude(Path, Path...)</code></a> instead.</span></div>
-</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#deleteExclude-java.nio.file.Path-java.nio.file.Path...-">deleteExclude</a></span>(java.nio.file.Path&nbsp;toDelete,
              java.nio.file.Path...&nbsp;excludes)</code>
 <div class="block">Delete the file if it isn't in excluded files.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getCRC32-java.io.File-">getCRC32</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -187,13 +170,13 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getCRC32-java.nio.file.Path-">getCRC32</a></span>(java.nio.file.Path&nbsp;path)</code>
 <div class="block">Get the CRC32 of a File.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileExtension-java.io.File-">getFileExtension</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -201,19 +184,19 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileExtension-java.nio.file.Path-">getFileExtension</a></span>(java.nio.file.Path&nbsp;path)</code>
 <div class="block">Get the extension of the given path.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFilePathOfClass-java.lang.Class-">getFilePathOfClass</a></span>(java.lang.Class&lt;?&gt;&nbsp;classToGetPath)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileSizeBytes-java.io.File-">getFileSizeBytes</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -221,11 +204,11 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileSizeBytes-java.nio.file.Path-">getFileSizeBytes</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileSizeKiloBytes-java.io.File-">getFileSizeKiloBytes</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -233,11 +216,11 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileSizeKiloBytes-java.nio.file.Path-">getFileSizeKiloBytes</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileSizeMegaBytes-java.io.File-">getFileSizeMegaBytes</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -245,17 +228,17 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>static long</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getFileSizeMegaBytes-java.nio.file.Path-">getFileSizeMegaBytes</a></span>(java.nio.file.Path&nbsp;path)</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getMD5-java.nio.file.Path-">getMD5</a></span>(java.nio.file.Path&nbsp;path)</code>
 <div class="block">Get the MD5 of the given path.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getMD5ofFile-java.io.File-">getMD5ofFile</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -263,11 +246,11 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static java.nio.file.Path</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getPathOfClass-java.lang.Class-">getPathOfClass</a></span>(java.lang.Class&lt;?&gt;&nbsp;classToGetPath)</code>&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getSHA1-java.io.File-">getSHA1</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -275,22 +258,22 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getSHA1-java.nio.file.Path-">getSHA1</a></span>(java.nio.file.Path&nbsp;path)</code>
 <div class="block">Get the SHA1 of the given path.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#getStringPathOfClass-java.lang.Class-">getStringPathOfClass</a></span>(java.lang.Class&lt;?&gt;&nbsp;classToGetPath)</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#hashInput-java.io.InputStream-java.lang.String-">hashInput</a></span>(java.io.InputStream&nbsp;input,
          java.lang.String&nbsp;method)</code>&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static java.io.File[]</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#list-java.io.File-">list</a></span>(java.io.File&nbsp;dir)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -298,13 +281,13 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static java.util.List&lt;java.nio.file.Path&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#list-java.nio.file.Path-">list</a></span>(java.nio.file.Path&nbsp;dir)</code>
 <div class="block">Get the list of all files in this directory (not recursively!)</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static java.util.List&lt;java.io.File&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#listRecursive-java.io.File-">listRecursive</a></span>(java.io.File&nbsp;directory)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -312,13 +295,13 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static java.util.List&lt;java.nio.file.Path&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#listRecursive-java.nio.file.Path-">listRecursive</a></span>(java.nio.file.Path&nbsp;directory)</code>
 <div class="block">Return all files in the directory (recursively!)</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>static java.io.File</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#removeExtension-java.io.File-">removeExtension</a></span>(java.io.File&nbsp;file)</code>
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
@@ -326,13 +309,13 @@ extends java.lang.Object</pre>
 </div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>static java.nio.file.Path</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#removeExtension-java.nio.file.Path-">removeExtension</a></span>(java.nio.file.Path&nbsp;path)</code>
 <div class="block">Remove the extension of the given path.</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../fr/flowarg/flowio/FileUtils.html#removeExtension-java.lang.String-">removeExtension</a></span>(java.lang.String&nbsp;fileName)</code>&nbsp;</td>
 </tr>
@@ -458,22 +441,6 @@ public static&nbsp;java.io.File&nbsp;removeExtension(java.io.File&nbsp;file)
 </dl>
 </li>
 </ul>
-<a name="deleteDirectory-java.io.File-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>deleteDirectory</h4>
-<pre>@Deprecated
-public static&nbsp;void&nbsp;deleteDirectory(java.io.File&nbsp;folder)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../fr/flowarg/flowio/FileUtils.html#deleteDirectory-java.nio.file.Path-"><code>deleteDirectory(Path)</code></a> instead.</span></div>
-<div class="block">Delete the given directory</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>folder</code> - folder to delete.</dd>
-</dl>
-</li>
-</ul>
 <a name="deleteDirectory-java.nio.file.Path-">
 <!--   -->
 </a>
@@ -488,24 +455,6 @@ public static&nbsp;void&nbsp;deleteDirectory(java.io.File&nbsp;folder)</pre>
 <dd><code>folder</code> - folder to delete.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if an I/O error occurred.</dd>
-</dl>
-</li>
-</ul>
-<a name="deleteExclude-java.io.File-java.io.File...-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>deleteExclude</h4>
-<pre>@Deprecated
-public static&nbsp;void&nbsp;deleteExclude(java.io.File&nbsp;toDelete,
-                                             java.io.File...&nbsp;excludes)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">use <a href="../../../fr/flowarg/flowio/FileUtils.html#deleteExclude-java.nio.file.Path-java.nio.file.Path...-"><code>deleteExclude(Path, Path...)</code></a> instead.</span></div>
-<div class="block">Delete the file if it isn't in excluded files.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>toDelete</code> - the file to delete.</dd>
-<dd><code>excludes</code> - whitelist</dd>
 </dl>
 </li>
 </ul>
