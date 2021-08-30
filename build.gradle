@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.3.4'
+version '1.4.0'
 archivesBaseName = 'flowmultitools'
 
 compileJava {
@@ -98,4 +98,9 @@ repositories {
 
 dependencies {
     api 'org.apache.commons:commons-compress:1.21'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+}
+
+test {
+    useJUnitPlatform()
 }

@@ -17,7 +17,10 @@ public interface ILogger
     
     default void writeToTheLogFile(String toLog) {}
     default void close() {}
-    
+
+    /**
+     * A POSIX-friendly color enumeration
+      */
     enum EnumLogColor
     {
         RESET("\u001B[0m"),
@@ -77,12 +80,6 @@ public interface ILogger
         public String toString()
         {
             return this.getColor();
-        }
-
-        public static void printAllColorsAvailable()
-        {
-            for (EnumLogColor color : values())
-                System.out.println(color + color.name() + RESET);
         }
     }
 }

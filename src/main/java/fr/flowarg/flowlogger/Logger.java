@@ -1,6 +1,9 @@
 package fr.flowarg.flowlogger;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,18 +16,6 @@ public class Logger implements ILogger
     private final String prefix;
     private Path logPath;
     private PrintWriter writer;
-
-    @Deprecated
-    public Logger(String prefix, File logFile, boolean append)
-    {
-        this(prefix, logFile.toPath(), append);
-    }
-
-    @Deprecated
-    public Logger(String prefix, File logFile)
-    {
-        this(prefix, logFile, false);
-    }
 
     public Logger(String prefix, Path logPath, boolean append)
     {

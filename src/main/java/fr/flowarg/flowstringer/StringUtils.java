@@ -7,7 +7,7 @@ public final class StringUtils
 {
     public static String empty(String baseStr, String str)
     {
-        return baseStr.replace(str, "");
+        return replace(baseStr, str, "");
     }
 
     public static char getFirstChar(String str)

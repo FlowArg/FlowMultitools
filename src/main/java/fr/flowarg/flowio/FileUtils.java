@@ -1,6 +1,9 @@
 package fr.flowarg.flowio;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,35 +19,6 @@ import java.util.zip.Checksum;
 
 public final class FileUtils
 {
-    /**
-     * Get the extension of the given file.
-     * @param file given file.
-     * @return the extension of the given file.
-     * @deprecated use {@link #getFileExtension(Path)} instead.
-     */
-    @Deprecated
-    public static String getFileExtension(final File file)
-    {
-        final String fileName = file.getName();
-        final int dotIndex = fileName.lastIndexOf(46);
-        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1);
-    }
-
-    /**
-     * Remove the extension of the given file.
-     * @param file given file.
-     * @return the given file without extension.
-     * @throws IOException if an I/O error occurred.
-     * @deprecated use {@link #removeExtension(Path)} instead.
-     */
-    @Deprecated
-    public static File removeExtension(final File file) throws IOException
-    {
-        if(!getFileExtension(file).isEmpty())
-            return Files.move(file.toPath(), new File(removeExtension(file.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING).toFile();
-        return file;
-    }
-
     public static String removeExtension(final String fileName)
     {
         if (fileName == null)
@@ -123,26 +97,6 @@ public final class FileUtils
      * Return all files in the directory (recursively!)
      * @param directory the directory to process.
      * @return the list of all files.
-     * @deprecated use {@link #listRecursive(Path)} instead.
-     */
-    @Deprecated
-    public static List<File> listRecursive(final File directory)
-    {
-        final List<File> files = new ArrayList<>();
-        final File[] fs = list(directory);
-
-        for (final File f : fs)
-        {
-            if (f.isDirectory()) files.addAll(listRecursive(f));
-            files.add(f);
-        }
-        return files;
-    }
-
-    /**
-     * Return all files in the directory (recursively!)
-     * @param directory the directory to process.
-     * @return the list of all files.
      * @throws IOException if an I/O error occurred.
      */
     public static List<Path> listRecursive(final Path directory) throws IOException
@@ -166,42 +120,6 @@ public final class FileUtils
 
             if (Files.notExists(path)) Files.createDirectory(path);
         }
-    }
-
-    /**
-     * Get the file size in MB
-     * @param file the file to process.
-     * @return the size in MB of the given file.
-     * @deprecated Deprecated since 1.2.7. Use {@link #getFileSizeMegaBytes(Path)} instead.
-     */
-    @Deprecated
-    public static long getFileSizeMegaBytes(File file)
-    {
-        return file.length() / (1024 * 1024);
-    }
-
-    /**
-     * Get the file size in KB
-     * @param file the file to process.
-     * @return the size in KB of the given file.
-     * @deprecated Deprecated since 1.2.7. Use {@link #getFileSizeKiloBytes(Path)} instead.
-     */
-    @Deprecated
-    public static long getFileSizeKiloBytes(File file)
-    {
-        return  file.length() / 1024;
-    }
-
-    /**
-     * Get the file size in bytes.
-     * @param file the file to process.
-     * @return the size in bytes of the given file.
-     * @deprecated Deprecated since 1.2.7. Use {@link #getFileSizeBytes(Path)} instead.
-     */
-    @Deprecated
-    public static long getFileSizeBytes(File file)
-    {
-        return file.length();
     }
 
     public static long getFileSizeMegaBytes(Path path) throws IOException
@@ -254,25 +172,6 @@ public final class FileUtils
     }
 
     /**
-     * Get the MD5 of the given file.
-     * @param file the file to process.
-     * @return the md5 of the file.
-     * @throws IOException is an I/O error occurred.
-     * @deprecated use {@link #getMD5(Path)} instead.
-     */
-    @Deprecated
-    public static String getMD5ofFile(final File file) throws IOException
-    {
-        try(final FileInputStream fi = new FileInputStream(file); final BufferedInputStream input = new BufferedInputStream(fi))
-        {
-            return hashInput(input, "MD5");
-        } catch (NoSuchAlgorithmException e)
-        {
-            throw new IOException(e);
-        }
-    }
-
-    /**
      * Get the MD5 of the given path.
      * @param path the path to process.
      * @return the md5 of the path.
@@ -283,25 +182,6 @@ public final class FileUtils
         try(InputStream in = Files.newInputStream(path); final BufferedInputStream input = new BufferedInputStream(in))
         {
             return hashInput(input, "MD5");
-        } catch (NoSuchAlgorithmException e)
-        {
-            throw new IOException(e);
-        }
-    }
-
-    /**
-     * Get the SHA1 of the given file.
-     * @param file the file to process.
-     * @return the sha1 of the file.
-     * @throws IOException is an I/O error occurred.
-     * @deprecated use {@link #getSHA1(Path)} instead.
-     */
-    @Deprecated
-    public static String getSHA1(final File file) throws IOException
-    {
-        try(final FileInputStream fi = new FileInputStream(file); final BufferedInputStream input = new BufferedInputStream(fi))
-        {
-            return hashInput(input, "SHA-1");
         } catch (NoSuchAlgorithmException e)
         {
             throw new IOException(e);
@@ -329,19 +209,6 @@ public final class FileUtils
      * Get the list of all files in this directory (not recursively!)
      * @param dir the dir to process.
      * @return the list of all files in this directory.
-     * @deprecated use {@link #list(Path)} instead.
-     */
-    @Deprecated
-    public static File[] list(final File dir)
-    {
-        final File[] files = dir.listFiles();
-        return files == null ? new File[0] : files;
-    }
-
-    /**
-     * Get the list of all files in this directory (not recursively!)
-     * @param dir the dir to process.
-     * @return the list of all files in this directory.
      * @throws IOException if an I/O error occurred.
      */
     public static List<Path> list(final Path dir) throws IOException
@@ -355,22 +222,6 @@ public final class FileUtils
             }
         }
         return result;
-    }
-
-    /**
-     * Get the CRC32 of a File.
-     * @param file the file to process
-     * @return the CRC32 of the file.
-     * @throws IOException is an I/O error occurred.
-     * @deprecated use {@link #getCRC32(Path)} instead.
-     */
-    @Deprecated
-    public static long getCRC32(File file) throws IOException
-    {
-        final Checksum checksum = new CRC32();
-        final byte[] bytes = Files.readAllBytes(file.toPath());
-        checksum.update(bytes, 0, bytes.length);
-        return checksum.getValue();
     }
 
     /**
