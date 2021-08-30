@@ -1,7 +1,6 @@
 package fr.flowarg.flowio;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -140,12 +139,6 @@ public final class FileUtils
     public static String getStringPathOfClass(Class<?> classToGetPath)
     {
         return classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath();
-    }
-
-    @Deprecated
-    public static File getFilePathOfClass(Class<?> classToGetPath)
-    {
-        return new File(classToGetPath.getProtectionDomain().getCodeSource().getLocation().getPath());
     }
 
     public static Path getPathOfClass(Class<?> classToGetPath)
