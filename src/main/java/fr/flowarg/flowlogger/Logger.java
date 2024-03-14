@@ -1,8 +1,6 @@
 package fr.flowarg.flowlogger;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -31,8 +29,8 @@ public class Logger implements ILogger
                     Files.createFile(this.logPath);
                 }
                 if(append)
-                    this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(this.logPath, StandardOpenOption.APPEND), StandardCharsets.UTF_8)));
-                else this.writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(this.logPath), StandardCharsets.UTF_8)));
+                    this.writer = new PrintWriter(Files.newBufferedWriter(this.logPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND));
+                else this.writer = new PrintWriter(Files.newBufferedWriter(this.logPath, StandardCharsets.UTF_8));
                 Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
             } catch (IOException e)
             {

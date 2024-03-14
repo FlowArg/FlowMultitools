@@ -4,42 +4,36 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.4.0'
+version '1.4.1'
 archivesBaseName = 'flowmultitools'
 
-compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-    options.encoding = 'UTF-8'
+repositories {
+    mavenCentral()
+    mavenLocal()
 }
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-    classifier 'javadoc'
-    from javadoc
-}
-
-jar {
-    manifest {
-        attributes([
-                'Automatic-Module-Name': 'flowmultitools'
-        ])
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
     }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+dependencies {
+    api 'org.apache.commons:commons-compress:1.26.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 
 artifacts {
-    archives sourcesJar, javadocJar
+    archives sourcesJar
+    archives javadocJar
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifact tasks.sourcesJar
-            artifact tasks.javadocJar
             
             pom {
                 groupId = project.group
@@ -66,7 +60,7 @@ publishing {
                     developer {
                         id = 'flowarg'
                         name = 'Flow Arg'
-                        email = 'coutureflorence3@gmail.com'
+                        email = 'flow@flowarg.fr'
                     }
                 }
             }
@@ -89,16 +83,6 @@ signing {
     def signingPassword = System.getenv("GPG_PASSPHRASE")
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-dependencies {
-    api 'org.apache.commons:commons-compress:1.21'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 }
 
 test {
