@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.4.2'
+version '1.4.3'
 archivesBaseName = 'flowmultitools'
 
 repositories {

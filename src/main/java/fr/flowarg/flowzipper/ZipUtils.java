@@ -112,7 +112,7 @@ public final class ZipUtils
             if (Files.isDirectory(path))
             {
                 addFolderToZip(path, parentFolder + '/' + path.getFileName().toString(), zos);
-                return;
+                continue;
             }
             zos.putNextEntry(new ZipEntry(parentFolder + "/" + path.getFileName().toString()));
 
