@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -43,7 +44,7 @@ public final class ZipUtils
                 else
                 {
                     int count;
-                    final byte[] data = new byte[8192];
+                    final byte[] data = new byte[4096];
                     try(final OutputStream fos = Files.newOutputStream(path))
                     {
                         while((count = tarIn.read(data, 0, 4096)) != -1)
@@ -167,7 +168,7 @@ public final class ZipUtils
         if (Files.notExists(fl))
             Files.createDirectories(fl.getParent());
 
-        Files.copy(zipFile.getInputStream(entry), fl);
+        Files.copy(zipFile.getInputStream(entry), fl, StandardCopyOption.REPLACE_EXISTING);
     }
 
     public static void unzipJar(Path destinationDir, Path jarPath, String... args) throws IOException
