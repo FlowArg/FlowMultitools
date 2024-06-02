@@ -11,6 +11,8 @@ import java.util.Date;
 
 public class Logger implements ILogger
 {
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("hh:mm:ss");
+
     private final String prefix;
     private Path logPath;
     private PrintWriter writer;
@@ -18,24 +20,25 @@ public class Logger implements ILogger
     public Logger(String prefix, Path logPath, boolean append)
     {
         this.prefix = prefix.endsWith(" ") ? prefix : prefix + " ";
-        this.logPath = logPath;
-        if(this.logPath != null)
+
+        if(logPath == null)
+            return;
+
+        this.logPath = logPath.toAbsolutePath();
+
+        try
         {
-            try
+            if (Files.notExists(this.logPath))
             {
-                if(Files.notExists(this.logPath))
-                {
-                    Files.createDirectories(this.logPath.getParent());
-                    Files.createFile(this.logPath);
-                }
-                if(append)
-                    this.writer = new PrintWriter(Files.newBufferedWriter(this.logPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND));
-                else this.writer = new PrintWriter(Files.newBufferedWriter(this.logPath, StandardCharsets.UTF_8));
-                Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
-            } catch (IOException e)
-            {
-                throw new RuntimeException(e);
+                Files.createDirectories(this.logPath.getParent());
+                Files.createFile(this.logPath);
             }
+            if (append) this.writer = new PrintWriter(Files.newBufferedWriter(this.logPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND));
+            else this.writer = new PrintWriter(Files.newBufferedWriter(this.logPath, StandardCharsets.UTF_8));
+            Runtime.getRuntime().addShutdownHook(new Thread(this.writer::close));
+        } catch (IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
@@ -46,7 +49,7 @@ public class Logger implements ILogger
 
     public void message(boolean err, String toWrite)
     {
-        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String date = String.format("[%s] ", SIMPLE_DATE_FORMAT.format(new Date()));
         final String msg = date + this.prefix + (err ? "[ERROR]: " : "[INFO]: ") + toWrite;
         if (err) System.out.println(EnumLogColor.RED + msg + EnumLogColor.RESET);
         else System.out.println(msg);
@@ -56,7 +59,7 @@ public class Logger implements ILogger
     @Override
     public void infoColor(EnumLogColor color, String toWrite)
     {
-        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String date = String.format("[%s] ", SIMPLE_DATE_FORMAT.format(new Date()));
         final String msg = date + this.prefix + "[INFO]: " + toWrite;
         final String coloredMessage = color + msg + EnumLogColor.RESET;
         System.out.println(coloredMessage);
@@ -78,7 +81,7 @@ public class Logger implements ILogger
     @Override
     public void warn(String message)
     {
-        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String date = String.format("[%s] ", SIMPLE_DATE_FORMAT.format(new Date()));
         final String msg = date + this.prefix + "[WARN]: " + message;
         final String coloredWarn = EnumLogColor.YELLOW + msg + EnumLogColor.RESET;
         System.out.println(coloredWarn);
@@ -88,7 +91,7 @@ public class Logger implements ILogger
     @Override
     public void debug(String message)
     {
-        final String date = String.format("[%s] ", new SimpleDateFormat("hh:mm:ss").format(new Date()));
+        final String date = String.format("[%s] ", SIMPLE_DATE_FORMAT.format(new Date()));
         final String msg = date + this.prefix + "[DEBUG]: " + message;
         final String coloredMessage = EnumLogColor.CYAN + msg + EnumLogColor.RESET;
         System.out.println(coloredMessage);
@@ -98,44 +101,67 @@ public class Logger implements ILogger
     @Override
     public void writeToTheLogFile(String toLog)
     {
-        if(this.logPath != null)
-        {
-            try
-            {
-                if(Files.notExists(this.logPath))
-                {
-                    Files.createDirectories(this.logPath.getParent());
-                    Files.createFile(this.logPath);
-                }
+        if(this.logPath == null)
+            return;
 
-                if(this.writer != null)
-                {
-                    this.writer.println(toLog);
-                    this.writer.flush();
-                }
-            } catch (IOException e)
+        try
+        {
+            if (Files.notExists(this.logPath))
             {
-                this.printStackTrace(e);
+                Files.createDirectories(this.logPath.getParent());
+                Files.createFile(this.logPath);
             }
+
+            if (this.writer != null)
+            {
+                this.writer.println(toLog);
+                this.writer.flush();
+            }
+        } catch (IOException e)
+        {
+            this.printStackTrace(e);
         }
     }
 
     @Override
-    public void printStackTrace(Throwable cause)
+    public void printStackTrace(Throwable error)
     {
-        this.printStackTrace("An error occurred : ", cause);
+        this.printStackTrace0(error, 0);
     }
 
-    @Override
-    public void printStackTrace(String errorName, Throwable cause)
+    private void printStackTrace0(Throwable error, int n)
     {
-        this.err(errorName + cause.toString());
-        for (StackTraceElement trace : cause.getStackTrace())
+        if(n > 10)
+        {
+            System.out.println(EnumLogColor.RED + "..." + EnumLogColor.RESET);
+            return;
+        }
+
+        if(n == 0)
+            this.err(error.toString());
+        else
+        {
+            final String toPrint = "Caused by: ";
+            System.out.println(EnumLogColor.RED + toPrint + error.toString() + EnumLogColor.RESET);
+            this.writeToTheLogFile(toPrint);
+        }
+
+        for (StackTraceElement trace : error.getStackTrace())
         {
             final String toPrint = "\tat " + trace.toString();
-            this.writeToTheLogFile(toPrint);
             System.out.println(EnumLogColor.RED + toPrint + EnumLogColor.RESET);
+            this.writeToTheLogFile(toPrint);
         }
+
+        if (error.getCause() != null)
+            this.printStackTrace0(error.getCause(), n + 1);
+    }
+
+    @Deprecated
+    @Override
+    public void printStackTrace(String errorName, Throwable error)
+    {
+        this.printStackTrace(error);
     }
 
     @Override

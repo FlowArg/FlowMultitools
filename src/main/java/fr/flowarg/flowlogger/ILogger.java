@@ -9,8 +9,10 @@ public interface ILogger
     void warn(String message);
     void debug(String message);
     void infoColor(EnumLogColor color, String message);
-    void printStackTrace(String errorName, Throwable cause);
-    void printStackTrace(Throwable cause);
+
+    @Deprecated
+    void printStackTrace(String errorName, Throwable error);
+    void printStackTrace(Throwable error);
     Path getLogPath();
     void setLogPath(Path logPath);
     String getPrefix();
