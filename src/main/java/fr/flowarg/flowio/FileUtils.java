@@ -1,6 +1,5 @@
 package fr.flowarg.flowio;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -172,9 +171,9 @@ public final class FileUtils
      */
     public static String getMD5(final Path path) throws IOException
     {
-        try(InputStream in = Files.newInputStream(path); final BufferedInputStream input = new BufferedInputStream(in))
+        try(InputStream in = Files.newInputStream(path))
         {
-            return hashInput(input, "MD5");
+            return hashInput(in, "MD5");
         } catch (NoSuchAlgorithmException e)
         {
             throw new IOException(e);
@@ -189,9 +188,9 @@ public final class FileUtils
      */
     public static String getSHA1(final Path path) throws IOException
     {
-        try(InputStream in = Files.newInputStream(path); final BufferedInputStream input = new BufferedInputStream(in))
+        try(InputStream in = Files.newInputStream(path);)
         {
-            return hashInput(input, "SHA-1");
+            return hashInput(in, "SHA-1");
         } catch (NoSuchAlgorithmException e)
         {
             throw new IOException(e);
