@@ -32,4 +32,6 @@ jobs:
         SONATYPE_TOKEN: ${{ secrets.SONATYPE_TOKEN }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        NEW_CENTRAL_ID: ${{ secrets.NEW_CENTRAL_ID }}
+        NEW_CENTRAL_TOKEN: ${{ secrets.NEW_CENTRAL_TOKEN }}
  
